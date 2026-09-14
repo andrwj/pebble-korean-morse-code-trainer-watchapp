@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MorseCodeTrainer Settings</title>
+  <style>
+    :root { color-scheme: light dark; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    body { margin: 0; background: #f2f2f7; color: #111; }
+    main { max-width: 680px; margin: auto; padding: 18px; }
+    h1 { font-size: 24px; margin: 6px 0 20px; }
+    h2 { font-size: 16px; margin: 0 0 14px; }
+    section { background: white; border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+    label { display: block; font-size: 13px; color: #555; margin: 12px 0 6px; }
+    select, input[type=number] { width: 100%; box-sizing: border-box; font-size: 16px; padding: 10px; border: 1px solid #bbb; border-radius: 9px; background: white; color: #111; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .error { color: #d70015; min-height: 18px; font-size: 13px; margin-top: 8px; }
+    button { width: 100%; border: 0; border-radius: 12px; padding: 14px; font-size: 17px; font-weight: 700; background: #5e2ced; color: white; }
+    button:disabled { background: #aaa; }
+    details { border-top: 1px solid #ddd; padding: 11px 0; }
+    details:first-of-type { border-top: 0; }
+    summary { cursor: pointer; font-weight: 600; }
+    pre { white-space: pre-wrap; word-break: break-word; background: #f4f4f4; padding: 10px; border-radius: 8px; color: #111; }
+    .meta { font-size: 12px; color: #666; margin-top: 4px; }
+    @media (prefers-color-scheme: dark) {
+      body { background: #000; color: #fff; }
+      section { background: #1c1c1e; }
+      label, .meta { color: #aaa; }
+      select, input[type=number] { background: #2c2c2e; color: #fff; border-color: #555; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>한국어 모스 연습</h1>
+
+  <section>
+    <h2>입력 설정</h2>
+    <label for="dot-source">점 입력</label>
+    <select id="dot-source"></select>
+    <label for="line-source">선 입력</label>
+    <select id="line-source"></select>
+    <div id="source-error" class="error"></div>
+  </section>
+
+  <section>
+    <h2>입력 속도</h2>
+    <label for="speed-level">입력 속도 단계</label>
+    <select id="speed-level">
+      <option value="1">1단계 · 400ms</option>
+      <option value="2">2단계 · 320ms</option>
+      <option value="3">3단계 · 250ms</option>
+      <option value="4">4단계 · 200ms</option>
+      <option value="5">5단계 · 160ms</option>
+      <option value="6">6단계 · 120ms</option>
+    </select>
+    <label for="unit-ms">세부 Unit (80–600ms)</label>
+    <input id="unit-ms" type="number" min="80" max="600" step="10">
+    <label class="row"><span>시각 피드백</span><input id="visual-feedback" type="checkbox"></label>
+  </section>
+
+  <section>
+    <h2>연습 문서</h2>
+    <div id="documents"><p class="meta">저장된 문서가 없습니다.</p></div>
+  </section>
+
+  <button id="save">저장</button>
+</main>
+<script>
+  var sources = [
+    [1,'Touch Down'],[2,'Touch Up'],[3,'Touch Short Hold'],[4,'Touch Long Hold'],
+    [5,'Touch Tap'],[6,'Touch Double Tap'],[7,'Swipe Up'],[8,'Swipe Down'],
+    [9,'Swipe Left'],[10,'Swipe Right'],[11,'Drag Up'],[12,'Drag Down'],
+    [13,'Drag Left'],[14,'Drag Right'],[15,'UP Single Click'],[16,'UP Long Click'],
+    [17,'SELECT Single Click'],[18,'SELECT Long Click'],[19,'DOWN Single Click'],[20,'DOWN Long Click']
+  ];
+  var levelUnits = [400,320,250,200,160,120];
+  var payload = {options:{version:1,dotInputSource:3,lineInputSource:4,speedLevel:3,unitMs:250,visualFeedback:1},documents:[]};
+  try {
+    if (location.hash.length > 1) payload = JSON.parse(decodeURIComponent(location.hash.slice(1)));
+  } catch (error) { console.log(error); }
+
+  var dot = document.getElementById('dot-source');
+  var line = document.getElementById('line-source');
+  sources.forEach(function(item) {
+    dot.add(new Option(item[1], item[0]));
+    line.add(new Option(item[1], item[0]));
+  });
+
+  var options = payload.options || {};
+  dot.value = String(options.dotInputSource || 3);
+  line.value = String(options.lineInputSource || 4);
+  document.getElementById('speed-level').value = String(options.speedLevel || 3);
+  document.getElementById('unit-ms').value = Number(options.unitMs || 250);
+  document.getElementById('visual-feedback').checked = Number(options.visualFeedback) !== 0;
+
+  function validate() {
+    var duplicate = dot.value === line.value;
+    var unit = Number(document.getElementById('unit-ms').value);
+    document.getElementById('source-error').textContent = duplicate ? '점 입력과 선 입력은 서로 달라야 합니다.' : '';
+    document.getElementById('save').disabled = duplicate || unit < 80 || unit > 600;
+    return !document.getElementById('save').disabled;
+  }
+  dot.addEventListener('change', validate);
+  line.addEventListener('change', validate);
+  document.getElementById('unit-ms').addEventListener('input', validate);
+  document.getElementById('speed-level').addEventListener('change', function(event) {
+    document.getElementById('unit-ms').value = levelUnits[Number(event.target.value)-1];
+    validate();
+  });
+
+  var documentHost = document.getElementById('documents');
+  if (payload.documents && payload.documents.length) {
+    documentHost.innerHTML = '';
+    payload.documents.slice().reverse().forEach(function(record) {
+      var details = document.createElement('details');
+      var summary = document.createElement('summary');
+      summary.textContent = new Date(record.startedAt).toLocaleString() + (record.complete ? '' : ' · 복구 대기');
+      var meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = '문서 ID ' + record.documentId + ' · ' + (record.text || '').length + '자';
+      var text = document.createElement('pre');
+      text.textContent = record.text || Object.keys(record.chunks || {}).sort(function(a,b){return Number(a)-Number(b);}).map(function(k){return record.chunks[k];}).join('');
+      details.appendChild(summary);
+      details.appendChild(meta);
+      details.appendChild(text);
+      documentHost.appendChild(details);
+    });
+  }
+
+  document.getElementById('save').addEventListener('click', function() {
+    if (!validate()) return;
+    var result = {options:{
+      version: Number(options.version || 1),
+      dotInputSource: Number(dot.value),
+      lineInputSource: Number(line.value),
+      speedLevel: Number(document.getElementById('speed-level').value),
+      unitMs: Number(document.getElementById('unit-ms').value),
+      visualFeedback: document.getElementById('visual-feedback').checked
+    }};
+    location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(result));
+  });
+  validate();
+</script>
+</body>
+</html>
