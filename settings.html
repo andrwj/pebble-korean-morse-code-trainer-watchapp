@@ -1,146 +1,1676 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>MorseCodeTrainer Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <style>
-    :root { color-scheme: light dark; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-    body { margin: 0; background: #f2f2f7; color: #111; }
-    main { max-width: 680px; margin: auto; padding: 18px; }
-    h1 { font-size: 24px; margin: 6px 0 20px; }
-    h2 { font-size: 16px; margin: 0 0 14px; }
-    section { background: white; border-radius: 14px; padding: 16px; margin-bottom: 16px; }
-    label { display: block; font-size: 13px; color: #555; margin: 12px 0 6px; }
-    select, input[type=number] { width: 100%; box-sizing: border-box; font-size: 16px; padding: 10px; border: 1px solid #bbb; border-radius: 9px; background: white; color: #111; }
-    .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .error { color: #d70015; min-height: 18px; font-size: 13px; margin-top: 8px; }
-    button { width: 100%; border: 0; border-radius: 12px; padding: 14px; font-size: 17px; font-weight: 700; background: #5e2ced; color: white; }
-    button:disabled { background: #aaa; }
-    details { border-top: 1px solid #ddd; padding: 11px 0; }
-    details:first-of-type { border-top: 0; }
-    summary { cursor: pointer; font-weight: 600; }
-    pre { white-space: pre-wrap; word-break: break-word; background: #f4f4f4; padding: 10px; border-radius: 8px; color: #111; }
-    .meta { font-size: 12px; color: #666; margin-top: 4px; }
-    @media (prefers-color-scheme: dark) {
-      body { background: #000; color: #fff; }
-      section { background: #1c1c1e; }
-      label, .meta { color: #aaa; }
-      select, input[type=number] { background: #2c2c2e; color: #fff; border-color: #555; }
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-card: rgba(30, 41, 59, 0.7);
+      --bg-card-hover: rgba(51, 65, 85, 0.8);
+      --bg-tertiary: rgba(15, 23, 42, 0.8);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --accent: #38bdf8;
+      --accent-secondary: #6366f1;
+      --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --success: #34d399;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-primary);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.14) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.14) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      padding: 20px 16px calc(110px + env(safe-area-inset-bottom, 0px));
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 16px 0 24px;
+      position: relative;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .lang-switcher {
+      display: inline-flex;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      padding: 2px;
+    }
+
+    .lang-btn {
+      padding: 3px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: all 0.2s;
+    }
+
+    .lang-btn.active {
+      background: var(--accent);
+      color: #0b0f19;
+    }
+
+    .header h1 {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .header-version {
+      margin-top: 8px;
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 2px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Section & Cards */
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin: 24px 0 10px 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .card-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .card-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border-color);
+      margin: 16px 0;
+    }
+
+    /* iOS Style Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 30px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider-track {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #334155;
+      transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 30px;
+    }
+
+    .slider-track:before {
+      position: absolute;
+      content: "";
+      height: 24px;
+      width: 24px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    input:checked + .slider-track {
+      background: var(--accent-gradient);
+    }
+
+    input:checked + .slider-track:before {
+      transform: translateX(22px);
+    }
+
+    /* Range Slider */
+    .range-slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.15);
+      outline: none;
+      -webkit-appearance: none;
+      accent-color: var(--accent);
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      border: 2px solid #ffffff;
+    }
+
+    /* Value Badges & Tags */
+    .value-badge {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.12);
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      white-space: nowrap;
+    }
+
+    /* Select & Inputs */
+    .select-input {
+      width: 100%;
+      background: var(--bg-tertiary);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      outline: none;
+      font-family: inherit;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .select-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    .select-input optgroup {
+      background: #0f172a;
+      color: var(--text-muted);
+      font-weight: 700;
+      padding: 4px;
+    }
+
+    .select-input option {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 6px;
+    }
+
+    .text-input {
+      background: var(--bg-tertiary);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .text-input:focus {
+      border-color: var(--accent);
+    }
+
+    /* Sub Button Group (Speed Grid) */
+    .speed-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .sub-btn {
+      padding: 9px 8px;
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .sub-btn .sub-btn-val {
+      font-size: 11px;
+      opacity: 0.75;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .sub-btn:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+      color: var(--text-main);
+    }
+
+    .sub-btn.active {
+      background: var(--accent);
+      color: #0b0f19;
+      border-color: var(--accent);
+      box-shadow: 0 2px 10px rgba(56, 189, 248, 0.35);
+      font-weight: 700;
+    }
+
+    .sub-btn.active .sub-btn-val {
+      opacity: 0.9;
+      font-weight: 700;
+    }
+
+    /* Error & Alert Banner */
+    .alert-banner {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      line-height: 1.45;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      animation: slide-in 0.25s ease-out;
+    }
+
+    .alert-banner.error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+    }
+
+    .alert-banner.warning {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fcd34d;
+    }
+
+    @keyframes slide-in {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Helper Callout Box */
+    .callout-box {
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(56, 189, 248, 0.18);
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--accent);
+      line-height: 1.45;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    /* Interactive Audio Tester */
+    .test-panel {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .test-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .test-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge {
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.15);
+      color: var(--text-muted);
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .status-badge.active {
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--accent);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+    }
+
+    .test-btn {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
+      color: #38bdf8;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      outline: none;
+      margin-top: 10px;
+    }
+
+    .test-btn:hover {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(99, 102, 241, 0.25) 100%);
+      border-color: #38bdf8;
+      transform: translateY(-1px);
+    }
+
+    .test-btn.is-playing {
+      background: var(--accent-gradient);
+      color: #0b0f19;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+      animation: pulse-ring 1.5s infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.6); }
+      70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+    }
+
+    .morse-visualizer {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.55);
+      border-radius: 10px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+
+    .morse-code-display {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 16px;
+      letter-spacing: 3px;
+      color: #f8fafc;
+      word-break: break-all;
+      padding: 4px 0;
+    }
+
+    /* Practice Documents Archive */
+    .doc-item {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+    }
+
+    .doc-item:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+      background: rgba(20, 30, 50, 0.8);
+    }
+
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .doc-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .doc-icon {
+      font-size: 16px;
+      color: var(--accent);
+    }
+
+    .doc-date {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .doc-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .doc-badge.complete {
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+    }
+
+    .doc-badge.pending {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .doc-meta {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .doc-content {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: none;
+    }
+
+    .doc-content.open {
+      display: block;
+    }
+
+    .doc-pre {
+      background: rgba(0, 0, 0, 0.45);
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #e2e8f0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .doc-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+
+    .copy-btn {
+      padding: 5px 12px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent);
+      color: #0b0f19;
+    }
+
+    .empty-docs {
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+
+    .empty-docs-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+      opacity: 0.6;
+    }
+
+    /* Fixed Bottom Action Bar */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border-color);
+      z-index: 100;
+    }
+
+    .bottom-content {
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.1s, opacity 0.2s, box-shadow 0.2s;
+      outline: none;
+      text-align: center;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+      box-shadow: none !important;
+    }
+
+    .btn-cancel {
+      background: rgba(51, 65, 85, 0.8);
+      color: var(--text-main);
+    }
+
+    .btn-cancel:hover {
+      background: rgba(71, 85, 105, 0.9);
+    }
+
+    .btn-save {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.35);
+    }
+
+    .btn-save:hover {
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.45);
     }
   </style>
 </head>
 <body>
-<main>
-  <h1>한국어 모스 연습</h1>
 
-  <section>
-    <h2>입력 설정</h2>
-    <label for="dot-source">점 입력</label>
-    <select id="dot-source"></select>
-    <label for="line-source">선 입력</label>
-    <select id="line-source"></select>
-    <div id="source-error" class="error"></div>
-  </section>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-top">
+        <div class="header-badge" data-i18n="badgeTitle">Emery Edition</div>
+        <div class="lang-switcher">
+          <button type="button" class="lang-btn" id="lang-ko" onclick="setLanguage('ko')">KO</button>
+          <button type="button" class="lang-btn" id="lang-en" onclick="setLanguage('en')">EN</button>
+        </div>
+      </div>
+      <h1 data-i18n="title">한국어 모스 트레이너</h1>
+      <p data-i18n="subtitle">Pebble 햅틱 & 제스처 모스 부호 입력 훈련기</p>
+      <div class="header-version" id="header_version">v0.2.0</div>
+    </div>
 
-  <section>
-    <h2>입력 속도</h2>
-    <label for="speed-level">입력 속도 단계</label>
-    <select id="speed-level">
-      <option value="1">1단계 · 400ms</option>
-      <option value="2">2단계 · 320ms</option>
-      <option value="3">3단계 · 250ms</option>
-      <option value="4">4단계 · 200ms</option>
-      <option value="5">5단계 · 160ms</option>
-      <option value="6">6단계 · 120ms</option>
-    </select>
-    <label for="unit-ms">세부 Unit (80–600ms)</label>
-    <input id="unit-ms" type="number" min="80" max="600" step="10">
-    <label class="row"><span>시각 피드백</span><input id="visual-feedback" type="checkbox"></label>
-  </section>
+    <!-- Error Alert Banner -->
+    <div id="validation_alert" class="alert-banner error" role="alert"></div>
 
-  <section>
-    <h2>연습 문서</h2>
-    <div id="documents"><p class="meta">저장된 문서가 없습니다.</p></div>
-  </section>
+    <!-- Section 1: Input Mapping -->
+    <div class="section-title">
+      <span>🕹️</span>
+      <span data-i18n="inputSectionTitle">입력 제스처 및 키 매핑</span>
+    </div>
 
-  <button id="save">저장</button>
-</main>
-<script>
-  var sources = [
-    [1,'Touch Down'],[2,'Touch Up'],[3,'Touch Short Hold'],[4,'Touch Long Hold'],
-    [5,'Touch Tap'],[6,'Touch Double Tap'],[7,'Swipe Up'],[8,'Swipe Down'],
-    [9,'Swipe Left'],[10,'Swipe Right'],[11,'Drag Up'],[12,'Drag Down'],
-    [13,'Drag Left'],[14,'Drag Right'],[15,'UP Single Click'],[16,'UP Long Click'],
-    [17,'SELECT Single Click'],[18,'SELECT Long Click'],[19,'DOWN Single Click'],[20,'DOWN Long Click']
-  ];
-  var levelUnits = [400,320,250,200,160,120];
-  var payload = {options:{version:1,dotInputSource:3,lineInputSource:4,speedLevel:3,unitMs:250,visualFeedback:1},documents:[]};
-  try {
-    if (location.hash.length > 1) payload = JSON.parse(decodeURIComponent(location.hash.slice(1)));
-  } catch (error) { console.log(error); }
+    <div class="card">
+      <div class="card-row">
+        <div class="card-info">
+          <div class="card-label">
+            <span style="color: var(--accent);">•</span>
+            <span data-i18n="dotSourceLabel">점(·) 입력</span>
+          </div>
+          <div class="card-desc" data-i18n="dotSourceDesc">모스 부호의 짧은 신호(Dot)를 생성할 제스처 또는 버튼을 선택합니다.</div>
+        </div>
+      </div>
+      <div style="margin-top: 10px;">
+        <select id="dot-source" class="select-input"></select>
+      </div>
 
-  var dot = document.getElementById('dot-source');
-  var line = document.getElementById('line-source');
-  sources.forEach(function(item) {
-    dot.add(new Option(item[1], item[0]));
-    line.add(new Option(item[1], item[0]));
-  });
+      <div class="divider"></div>
 
-  var options = payload.options || {};
-  dot.value = String(options.dotInputSource || 3);
-  line.value = String(options.lineInputSource || 4);
-  document.getElementById('speed-level').value = String(options.speedLevel || 3);
-  document.getElementById('unit-ms').value = Number(options.unitMs || 250);
-  document.getElementById('visual-feedback').checked = Number(options.visualFeedback) !== 0;
+      <div class="card-row">
+        <div class="card-info">
+          <div class="card-label">
+            <span style="color: var(--accent-secondary); font-size: 18px; line-height: 1;">—</span>
+            <span data-i18n="lineSourceLabel">선(—) 입력</span>
+          </div>
+          <div class="card-desc" data-i18n="lineSourceDesc">모스 부호의 긴 신호(Dash)를 생성할 제스처 또는 버튼을 선택합니다.</div>
+        </div>
+      </div>
+      <div style="margin-top: 10px;">
+        <select id="line-source" class="select-input"></select>
+      </div>
 
-  function validate() {
-    var duplicate = dot.value === line.value;
-    var unit = Number(document.getElementById('unit-ms').value);
-    document.getElementById('source-error').textContent = duplicate ? '점 입력과 선 입력은 서로 달라야 합니다.' : '';
-    document.getElementById('save').disabled = duplicate || unit < 80 || unit > 600;
-    return !document.getElementById('save').disabled;
-  }
-  dot.addEventListener('change', validate);
-  line.addEventListener('change', validate);
-  document.getElementById('unit-ms').addEventListener('input', validate);
-  document.getElementById('speed-level').addEventListener('change', function(event) {
-    document.getElementById('unit-ms').value = levelUnits[Number(event.target.value)-1];
-    validate();
-  });
+      <div class="divider"></div>
 
-  var documentHost = document.getElementById('documents');
-  if (payload.documents && payload.documents.length) {
-    documentHost.innerHTML = '';
-    payload.documents.slice().reverse().forEach(function(record) {
-      var details = document.createElement('details');
-      var summary = document.createElement('summary');
-      summary.textContent = new Date(record.startedAt).toLocaleString() + (record.complete ? '' : ' · 복구 대기');
-      var meta = document.createElement('div');
-      meta.className = 'meta';
-      meta.textContent = '문서 ID ' + record.documentId + ' · ' + (record.text || '').length + '자';
-      var text = document.createElement('pre');
-      text.textContent = record.text || Object.keys(record.chunks || {}).sort(function(a,b){return Number(a)-Number(b);}).map(function(k){return record.chunks[k];}).join('');
-      details.appendChild(summary);
-      details.appendChild(meta);
-      details.appendChild(text);
-      documentHost.appendChild(details);
-    });
-  }
+      <div class="card-row">
+        <div class="card-info">
+          <div class="card-label">
+            <span>↵</span>
+            <span data-i18n="confirmSourceLabel">글자 완성 / 띄어쓰기</span>
+          </div>
+          <div class="card-desc" data-i18n="confirmSourceDesc">조합 중인 자모를 음절로 확정하거나 새 입력이 없을 때 띄어쓰기를 수행합니다.</div>
+        </div>
+      </div>
+      <div style="margin-top: 10px;">
+        <select id="confirm-source" class="select-input"></select>
+      </div>
+      <div class="callout-box" id="confirm-help-box">
+        <span>💡</span>
+        <div id="confirm-help" style="flex: 1;"></div>
+      </div>
+    </div>
 
-  document.getElementById('save').addEventListener('click', function() {
-    if (!validate()) return;
-    var result = {options:{
-      version: Number(options.version || 1),
-      dotInputSource: Number(dot.value),
-      lineInputSource: Number(line.value),
-      speedLevel: Number(document.getElementById('speed-level').value),
-      unitMs: Number(document.getElementById('unit-ms').value),
-      visualFeedback: document.getElementById('visual-feedback').checked
-    }};
-    location.href = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(result));
-  });
-  validate();
-</script>
+    <!-- Section 2: Speed & Timing -->
+    <div class="section-title">
+      <span>⏱️</span>
+      <span data-i18n="speedSectionTitle">입력 속도 및 단위 시간 (Timing)</span>
+    </div>
+
+    <div class="card">
+      <div class="card-row">
+        <div class="card-info">
+          <div class="card-label" data-i18n="speedLevelLabel">입력 속도 프리셋</div>
+          <div class="card-desc" data-i18n="speedLevelDesc">훈련 숙련도에 맞춰 기본 템포 단계를 빠르게 선택할 수 있습니다.</div>
+        </div>
+      </div>
+
+      <div class="speed-btn-grid" id="speed_btn_group">
+        <button type="button" class="sub-btn" data-level="1">
+          <span>1단계</span>
+          <span class="sub-btn-val">400ms</span>
+        </button>
+        <button type="button" class="sub-btn" data-level="2">
+          <span>2단계</span>
+          <span class="sub-btn-val">320ms</span>
+        </button>
+        <button type="button" class="sub-btn active" data-level="3">
+          <span>3단계</span>
+          <span class="sub-btn-val">250ms</span>
+        </button>
+        <button type="button" class="sub-btn" data-level="4">
+          <span>4단계</span>
+          <span class="sub-btn-val">200ms</span>
+        </button>
+        <button type="button" class="sub-btn" data-level="5">
+          <span>5단계</span>
+          <span class="sub-btn-val">160ms</span>
+        </button>
+        <button type="button" class="sub-btn" data-level="6">
+          <span>6단계</span>
+          <span class="sub-btn-val">120ms</span>
+        </button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="card-row">
+        <div class="card-info">
+          <div class="card-label" data-i18n="unitMsLabel">세부 단위 시간 (Unit Duration)</div>
+          <div class="card-desc" data-i18n="unitMsDesc">모스 부호 1단위(Dot)의 지속 시간입니다. (80 ~ 600ms)</div>
+        </div>
+        <div class="value-badge" id="unit_ms_val">250ms</div>
+      </div>
+      <input type="range" id="unit-ms-range" min="80" max="600" step="10" value="250" class="range-slider">
+
+      <div class="divider"></div>
+
+      <div class="card-row">
+        <div class="card-info">
+          <div class="card-label" data-i18n="use3UnitsLabel">3-Units 자동 글자 완성</div>
+          <div class="card-desc" data-i18n="use3UnitsDesc">점 길이의 3배(3-Units) 동안 쉴 때 글자 입력을 자동으로 반영합니다. 끄면 수동 확인 동작으로만 완성합니다.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="use-3-units">
+          <span class="slider-track"></span>
+        </label>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="card-row">
+        <div class="card-info">
+          <div class="card-label" data-i18n="use7UnitsLabel">7-Units 자동 띄어쓰기</div>
+          <div class="card-desc" data-i18n="use7UnitsDesc">마지막 입력 후 점 길이의 7배(7-Units) 동안 쉴 때 띄어쓰기를 삽입합니다. 끄면 수동 띄어쓰기를 사용합니다.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="use-7-units">
+          <span class="slider-track"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Section 3: Feedback & Audio Simulator -->
+    <div class="section-title">
+      <span>✨</span>
+      <span data-i18n="feedbackSectionTitle">피드백 & 리듬 시뮬레이터</span>
+    </div>
+
+    <div class="card">
+      <div class="card-row">
+        <div class="card-info">
+          <div class="card-label" data-i18n="visualFeedbackLabel">시각 피드백 (Visual Feedback)</div>
+          <div class="card-desc" data-i18n="visualFeedbackDesc">신호 입력 시 화면에 펄스 및 모스 부호 경로를 시각적으로 표시합니다.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="visual-feedback" checked>
+          <span class="slider-track"></span>
+        </label>
+      </div>
+
+      <div class="test-panel">
+        <div class="test-header">
+          <div class="test-title" data-i18n="audioPreviewTitle">모스 리듬 미리듣기 (Web Audio)</div>
+          <span id="test_status_badge" class="status-badge" data-i18n="testStatusReady">Ready</span>
+        </div>
+        <div class="card-desc" data-i18n="audioPreviewDesc">설정된 Unit 시간(ms)에 맞춘 실제 모스 부호 사운드('MORSE') 템포를 지금 미리 들어보세요.</div>
+
+        <button type="button" id="btn_test_audio" class="test-btn">
+          <span>🔊</span>
+          <span id="txt_test_audio" data-i18n="btnTestAudio">사운드 템포 체험</span>
+        </button>
+
+        <div id="morse_visualizer" class="morse-visualizer">
+          <div style="font-size: 12px; color: var(--accent); font-weight: 700; margin-bottom: 4px;">TEST: "MORSE" (· 1 Unit / — 3 Units)</div>
+          <div id="morse_code_display" class="morse-code-display"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Practice Documents -->
+    <div class="section-title">
+      <span>📜</span>
+      <span data-i18n="documentsSectionTitle">연습 문서 기록 (Archive)</span>
+    </div>
+
+    <div class="card">
+      <div id="documents_list">
+        <div class="empty-docs">
+          <div class="empty-docs-icon">📂</div>
+          <div data-i18n="noDocuments">동기화된 연습 문서가 없습니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Action Bar -->
+  <div class="bottom-bar">
+    <div class="bottom-content">
+      <button type="button" class="btn btn-cancel" id="btn-cancel" data-i18n="cancelBtn">취소</button>
+      <button type="button" class="btn btn-save" id="btn-save" data-i18n="saveBtn">설정 저장</button>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // Multi-Language (i18n) Data
+    // ==========================================
+    var i18nData = {
+      ko: {
+        badgeTitle: "Emery Edition",
+        title: "한국어 모스 트레이너",
+        subtitle: "Pebble 햅틱 & 제스처 모스 부호 입력 훈련기",
+        inputSectionTitle: "입력 제스처 및 키 매핑",
+        dotSourceLabel: "점(·) 입력",
+        dotSourceDesc: "모스 부호의 짧은 신호(Dot)를 생성할 제스처 또는 버튼을 선택합니다.",
+        lineSourceLabel: "선(—) 입력",
+        lineSourceDesc: "모스 부호의 긴 신호(Dash)를 생성할 제스처 또는 버튼을 선택합니다.",
+        confirmSourceLabel: "글자 완성 / 띄어쓰기",
+        confirmSourceDesc: "조합 중인 자모를 음절로 확정하거나 새 입력이 없을 때 띄어쓰기를 수행합니다.",
+        speedSectionTitle: "입력 속도 및 단위 시간 (Timing)",
+        speedLevelLabel: "입력 속도 프리셋",
+        speedLevelDesc: "훈련 숙련도에 맞춰 기본 템포 단계를 빠르게 선택할 수 있습니다.",
+        levelSuffix: "단계",
+        unitMsLabel: "세부 단위 시간 (Unit Duration)",
+        unitMsDesc: "모스 부호 1단위(Dot)의 지속 시간입니다. (80 ~ 600ms)",
+        use3UnitsLabel: "3-Units 자동 글자 완성",
+        use3UnitsDesc: "점 길이의 3배(3-Units) 동안 쉴 때 글자 입력을 자동으로 반영합니다. 끄면 수동 확인 동작으로만 완성합니다.",
+        use7UnitsLabel: "7-Units 자동 띄어쓰기",
+        use7UnitsDesc: "마지막 입력 후 점 길이의 7배(7-Units) 동안 쉴 때 띄어쓰기를 삽입합니다. 끄면 수동 띄어쓰기를 사용합니다.",
+        feedbackSectionTitle: "피드백 & 리듬 시뮬레이터",
+        visualFeedbackLabel: "시각 피드백 (Visual Feedback)",
+        visualFeedbackDesc: "신호 입력 시 화면에 펄스 및 모스 부호 경로를 시각적으로 표시합니다.",
+        audioPreviewTitle: "모스 리듬 미리듣기 (Web Audio)",
+        audioPreviewDesc: "설정된 Unit 시간(ms)에 맞춘 실제 모스 부호 사운드('MORSE') 템포를 지금 미리 들어보세요.",
+        testStatusReady: "대기",
+        testStatusPlaying: "재생 중...",
+        btnTestAudio: "사운드 템포 체험",
+        btnStopAudio: "사운드 정지",
+        documentsSectionTitle: "연습 문서 기록 (Archive)",
+        noDocuments: "동기화된 연습 문서가 없습니다.",
+        docComplete: "완료됨",
+        docPending: "복구 대기",
+        docChars: "자",
+        docId: "문서 ID",
+        copyBtn: "전문 복사",
+        copiedToast: "복사 완료!",
+        cancelBtn: "취소",
+        saveBtn: "설정 저장",
+        errDuplicate: "오류: 점(·), 선(—), 글자 완성 동작은 서로 다른 동작을 지정해야 합니다.",
+        errUnitRange: "오류: 단위 시간(Unit Ms)은 80ms에서 600ms 사이의 정수여야 합니다.",
+        errPayloadVersion: "주의: 시계의 최신 설정을 불러온 뒤 다시 열어 주세요.",
+        errIncomplete: "오류: 세 가지 입력 동작을 모두 선택해 주세요.",
+        confirmRightHelp: "오른쪽으로 밀어 글자 완성 · 완성 후 새 입력이 없으면 띄어쓰기",
+        confirmGeneralHelp: "선택한 동작으로 글자 완성 · 완성 후 새 입력이 없으면 띄어쓰기",
+        groupTouch: "터치 제스처 (Touch Gestures)",
+        groupButton: "하드웨어 버튼 (Hardware Buttons)"
+      },
+      en: {
+        badgeTitle: "Emery Edition",
+        title: "Korean Morse Trainer",
+        subtitle: "Pebble Haptic & Gesture Morse Code Training System",
+        inputSectionTitle: "Gesture & Key Mapping",
+        dotSourceLabel: "Dot (·) Input",
+        dotSourceDesc: "Select gesture or button to trigger a short signal (Dot).",
+        lineSourceLabel: "Dash (—) Input",
+        lineSourceDesc: "Select gesture or button to trigger a long signal (Dash).",
+        confirmSourceLabel: "Commit / Word Gap",
+        confirmSourceDesc: "Commit composed jamo into a syllable, or insert a space when paused.",
+        speedSectionTitle: "Input Speed & Timing Units",
+        speedLevelLabel: "Speed Level Preset",
+        speedLevelDesc: "Quickly select tempo according to your proficiency level.",
+        levelSuffix: "Level",
+        unitMsLabel: "Unit Duration (ms)",
+        unitMsDesc: "Duration of a single dot unit in milliseconds. (80 ~ 600ms)",
+        use3UnitsLabel: "3-Units Auto Commit",
+        use3UnitsDesc: "Automatically commits character when paused for 3x dot unit. Disable to commit manually.",
+        use7UnitsLabel: "7-Units Auto Word Gap",
+        use7UnitsDesc: "Automatically inserts a space when paused for 7x dot unit. Disable to space manually.",
+        feedbackSectionTitle: "Feedback & Rhythm Simulator",
+        visualFeedbackLabel: "Visual Feedback",
+        visualFeedbackDesc: "Show visual pulse and morse path animation on screen during input.",
+        audioPreviewTitle: "Morse Rhythm Preview (Web Audio)",
+        audioPreviewDesc: "Listen to the current unit duration rhythm ('MORSE') on your device.",
+        testStatusReady: "Ready",
+        testStatusPlaying: "Playing...",
+        btnTestAudio: "Play Rhythm Preview",
+        btnStopAudio: "Stop Audio",
+        documentsSectionTitle: "Practice Documents Archive",
+        noDocuments: "No synchronized practice documents found.",
+        docComplete: "Complete",
+        docPending: "Pending",
+        docChars: "chars",
+        docId: "Doc ID",
+        copyBtn: "Copy Text",
+        copiedToast: "Copied!",
+        cancelBtn: "Cancel",
+        saveBtn: "Save Settings",
+        errDuplicate: "Error: Dot, Dash, and Commit inputs must be assigned to different actions.",
+        errUnitRange: "Error: Unit duration must be an integer between 80ms and 600ms.",
+        errPayloadVersion: "Notice: Please reload the latest settings from the watch and reopen.",
+        errIncomplete: "Error: Please select valid actions for all three inputs.",
+        confirmRightHelp: "Swipe right to commit · Space if no new input",
+        confirmGeneralHelp: "Selected action to commit · Space if no new input",
+        groupTouch: "Touch Gestures",
+        groupButton: "Hardware Buttons"
+      }
+    };
+
+    var currentLang = 'ko';
+
+    var SOURCES_DEF = [
+      { id: 1, group: 'touch', en: 'Touch Down', ko: '터치 누름 (Touch Down)' },
+      { id: 2, group: 'touch', en: 'Touch Up', ko: '터치 뗌 (Touch Up)' },
+      { id: 3, group: 'touch', en: 'Touch Short Hold', ko: '터치 짧게 누름 (Short Hold)' },
+      { id: 4, group: 'touch', en: 'Touch Long Hold', ko: '터치 길게 누름 (Long Hold)' },
+      { id: 5, group: 'touch', en: 'Touch Tap', ko: '터치 탭 (Tap)' },
+      { id: 6, group: 'touch', en: 'Touch Double Tap', ko: '터치 더블 탭 (Double Tap)' },
+      { id: 7, group: 'touch', en: 'Swipe Up', ko: '위로 스와이프 (Swipe Up)' },
+      { id: 8, group: 'touch', en: 'Swipe Down', ko: '아래로 스와이프 (Swipe Down)' },
+      { id: 9, group: 'touch', en: 'Swipe Left', ko: '왼쪽으로 스와이프 (Swipe Left)' },
+      { id: 10, group: 'touch', en: 'Swipe Right', ko: '오른쪽으로 스와이프 (Swipe Right)' },
+      { id: 11, group: 'touch', en: 'Drag Up', ko: '위로 드래그 (Drag Up)' },
+      { id: 12, group: 'touch', en: 'Drag Down', ko: '아래로 드래그 (Drag Down)' },
+      { id: 13, group: 'touch', en: 'Drag Left', ko: '왼쪽으로 드래그 (Drag Left)' },
+      { id: 14, group: 'touch', en: 'Drag Right', ko: '오른쪽으로 드래그 (Drag Right)' },
+      { id: 15, group: 'button', en: 'UP Single Click', ko: '위(UP) 버튼 클릭' },
+      { id: 16, group: 'button', en: 'UP Long Click', ko: '위(UP) 버튼 길게 누름' },
+      { id: 17, group: 'button', en: 'SELECT Single Click', ko: '가운데(SELECT) 버튼 클릭' },
+      { id: 18, group: 'button', en: 'SELECT Long Click', ko: '가운데(SELECT) 버튼 길게 누름' },
+      { id: 19, group: 'button', en: 'DOWN Single Click', ko: '아래(DOWN) 버튼 클릭' },
+      { id: 20, group: 'button', en: 'DOWN Long Click', ko: '아래(DOWN) 버튼 길게 누름' }
+    ];
+
+    var LEVEL_UNITS = [400, 320, 250, 200, 160, 120];
+
+    var DEFAULT_OPTIONS = {
+      version: 2,
+      dotInputSource: 3,
+      lineInputSource: 4,
+      confirm_input_source: 10,
+      use_3_units: 0,
+      use_7_units: 0,
+      speedLevel: 3,
+      unitMs: 250,
+      visualFeedback: 1
+    };
+
+    var payload = {
+      options: Object.assign({}, DEFAULT_OPTIONS),
+      documents: []
+    };
+
+    var currentOptions = Object.assign({}, DEFAULT_OPTIONS);
+
+    // ==========================================
+    // Query & Hash Parser
+    // ==========================================
+    function getQueryParam(variable, defaultValue) {
+      var query = location.search.substring(1);
+      var vars = query.split('&');
+      for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (pair[0] === variable) {
+          return decodeURIComponent(pair[1]);
+        }
+      }
+      return defaultValue;
+    }
+
+    function initPayload() {
+      try {
+        var hash = location.hash ? location.hash.substring(1) : '';
+        if (!hash && location.search) {
+          hash = getQueryParam('options', '');
+        }
+        if (hash) {
+          var parsed = JSON.parse(decodeURIComponent(hash));
+          if (parsed && typeof parsed === 'object') {
+            if (parsed.options) {
+              payload.options = parsed.options;
+              payload.documents = Array.isArray(parsed.documents) ? parsed.documents : [];
+            } else {
+              payload.options = parsed;
+              payload.documents = [];
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Payload parse failed:', err);
+      }
+
+      var opt = payload.options || {};
+      currentOptions.version = opt.version !== undefined ? Number(opt.version) : DEFAULT_OPTIONS.version;
+      currentOptions.dotInputSource = opt.dotInputSource !== undefined ? Number(opt.dotInputSource) : DEFAULT_OPTIONS.dotInputSource;
+      currentOptions.lineInputSource = opt.lineInputSource !== undefined ? Number(opt.lineInputSource) : DEFAULT_OPTIONS.lineInputSource;
+      currentOptions.confirm_input_source = opt.confirm_input_source !== undefined ? Number(opt.confirm_input_source) : DEFAULT_OPTIONS.confirm_input_source;
+      currentOptions.use_3_units = opt.use_3_units !== undefined ? (Number(opt.use_3_units) === 1 ? 1 : 0) : DEFAULT_OPTIONS.use_3_units;
+      currentOptions.use_7_units = opt.use_7_units !== undefined ? (Number(opt.use_7_units) === 1 ? 1 : 0) : DEFAULT_OPTIONS.use_7_units;
+      currentOptions.speedLevel = opt.speedLevel !== undefined ? Number(opt.speedLevel) : DEFAULT_OPTIONS.speedLevel;
+      currentOptions.unitMs = opt.unitMs !== undefined ? Number(opt.unitMs) : DEFAULT_OPTIONS.unitMs;
+      currentOptions.visualFeedback = opt.visualFeedback !== undefined ? (opt.visualFeedback ? 1 : 0) : DEFAULT_OPTIONS.visualFeedback;
+    }
+
+    // ==========================================
+    // Populate Select Options with Optgroups
+    // ==========================================
+    function populateSelect(selectEl, selectedVal) {
+      var prevVal = selectedVal !== undefined ? selectedVal : selectEl.value;
+      selectEl.innerHTML = '';
+
+      var dict = i18nData[currentLang] || i18nData['en'];
+
+      var touchGroup = document.createElement('optgroup');
+      touchGroup.label = dict.groupTouch;
+
+      var btnGroup = document.createElement('optgroup');
+      btnGroup.label = dict.groupButton;
+
+      SOURCES_DEF.forEach(function(item) {
+        var opt = document.createElement('option');
+        opt.value = String(item.id);
+        opt.textContent = currentLang === 'ko' ? item.ko : item.en;
+        if (item.group === 'touch') {
+          touchGroup.appendChild(opt);
+        } else {
+          btnGroup.appendChild(opt);
+        }
+      });
+
+      selectEl.appendChild(touchGroup);
+      selectEl.appendChild(btnGroup);
+
+      if (prevVal !== undefined) {
+        selectEl.value = String(prevVal);
+      }
+    }
+
+    function populateAllSelects() {
+      var dot = document.getElementById('dot-source');
+      var line = document.getElementById('line-source');
+      var confirm = document.getElementById('confirm-source');
+
+      populateSelect(dot, currentOptions.dotInputSource);
+      populateSelect(line, currentOptions.lineInputSource);
+      populateSelect(confirm, currentOptions.confirm_input_source);
+    }
+
+    // ==========================================
+    // Language & UI Localization
+    // ==========================================
+    function setLanguage(lang) {
+      currentLang = lang;
+      var dict = i18nData[lang] || i18nData['en'];
+
+      document.getElementById('lang-ko').classList.toggle('active', lang === 'ko');
+      document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+      document.documentElement.lang = lang;
+
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+          el.textContent = dict[key];
+        }
+      });
+
+      // Update speed button labels
+      document.querySelectorAll('.speed-btn-grid .sub-btn').forEach(function(btn) {
+        var lvl = btn.getAttribute('data-level');
+        var firstSpan = btn.querySelector('span:first-child');
+        if (firstSpan) {
+          firstSpan.textContent = lvl + (dict.levelSuffix ? (lang === 'ko' ? '단계' : ' Level') : ' Lv');
+        }
+      });
+
+      populateAllSelects();
+      validate();
+      renderDocuments();
+    }
+
+    function detectLanguage() {
+      var userLang = (navigator.language || navigator.userLanguage || 'ko').toLowerCase();
+      if (userLang.indexOf('en') === 0) {
+        setLanguage('en');
+      } else {
+        setLanguage('ko');
+      }
+    }
+
+    // ==========================================
+    // Validation & State Synchronization
+    // ==========================================
+    function updateUnitDisplay(ms) {
+      var badge = document.getElementById('unit_ms_val');
+      if (badge) badge.textContent = ms + 'ms';
+      var range = document.getElementById('unit-ms-range');
+      if (range && Number(range.value) !== ms) {
+        range.value = ms;
+      }
+    }
+
+    function syncSpeedPreset(ms) {
+      var matchingLevel = -1;
+      for (var i = 0; i < LEVEL_UNITS.length; i++) {
+        if (LEVEL_UNITS[i] === ms) {
+          matchingLevel = i + 1;
+          break;
+        }
+      }
+
+      currentOptions.speedLevel = matchingLevel > 0 ? matchingLevel : 3;
+
+      document.querySelectorAll('.speed-btn-grid .sub-btn').forEach(function(btn) {
+        var lvl = Number(btn.getAttribute('data-level'));
+        btn.classList.toggle('active', lvl === matchingLevel);
+      });
+    }
+
+    function validate() {
+      var dot = document.getElementById('dot-source');
+      var line = document.getElementById('line-source');
+      var confirm = document.getElementById('confirm-source');
+      var alertBox = document.getElementById('validation_alert');
+      var saveBtn = document.getElementById('btn-save');
+      var confirmHelp = document.getElementById('confirm-help');
+      var dict = i18nData[currentLang] || i18nData['en'];
+
+      var dotVal = Number(dot.value);
+      var lineVal = Number(line.value);
+      var confirmVal = Number(confirm.value);
+      var unitMs = Number(currentOptions.unitMs);
+
+      // Confirm helper text
+      if (confirmVal === 10) {
+        confirmHelp.textContent = dict.confirmRightHelp;
+      } else {
+        confirmHelp.textContent = dict.confirmGeneralHelp;
+      }
+
+      // Check duplicates
+      var isDuplicate = (dotVal === lineVal) || (dotVal === confirmVal) || (lineVal === confirmVal);
+
+      // Check valid sources
+      var isValidSources = [dotVal, lineVal, confirmVal].every(function(v) {
+        return SOURCES_DEF.some(function(s) { return s.id === v; });
+      });
+
+      // Check Unit Ms
+      var isUnitValid = isFinite(unitMs) && Math.floor(unitMs) === unitMs && unitMs >= 80 && unitMs <= 600;
+
+      // Check Version & Payload
+      var isVersionValid = Number(currentOptions.version) === 2;
+
+      var errorMsg = '';
+      if (!isVersionValid) {
+        errorMsg = dict.errPayloadVersion;
+      } else if (isDuplicate) {
+        errorMsg = dict.errDuplicate;
+      } else if (!isValidSources) {
+        errorMsg = dict.errIncomplete;
+      } else if (!isUnitValid) {
+        errorMsg = dict.errUnitRange;
+      }
+
+      if (errorMsg) {
+        alertBox.textContent = errorMsg;
+        alertBox.style.display = 'block';
+        saveBtn.disabled = true;
+        return false;
+      } else {
+        alertBox.style.display = 'none';
+        saveBtn.disabled = false;
+        return true;
+      }
+    }
+
+    // ==========================================
+    // Practice Documents Rendering
+    // ==========================================
+    function renderDocuments() {
+      var container = document.getElementById('documents_list');
+      var dict = i18nData[currentLang] || i18nData['en'];
+      var docs = payload.documents || [];
+
+      if (!docs.length) {
+        container.innerHTML =
+          '<div class="empty-docs">' +
+            '<div class="empty-docs-icon">📂</div>' +
+            '<div>' + dict.noDocuments + '</div>' +
+          '</div>';
+        return;
+      }
+
+      container.innerHTML = '';
+      docs.slice().reverse().forEach(function(record, index) {
+        var itemEl = document.createElement('div');
+        itemEl.className = 'doc-item';
+
+        var formattedDate = record.startedAt ? new Date(record.startedAt).toLocaleString() : ('Document #' + record.documentId);
+        var isComplete = !!record.complete;
+        var badgeClass = isComplete ? 'complete' : 'pending';
+        var badgeText = isComplete ? dict.docComplete : dict.docPending;
+
+        var fullText = record.text || '';
+        if (!fullText && record.chunks) {
+          fullText = Object.keys(record.chunks)
+            .sort(function(a, b) { return Number(a) - Number(b); })
+            .map(function(k) { return record.chunks[k]; })
+            .join('');
+        }
+
+        var charCount = (fullText || '').length;
+
+        var headerEl = document.createElement('div');
+        headerEl.className = 'doc-header';
+        headerEl.innerHTML =
+          '<div>' +
+            '<div class="doc-title-group">' +
+              '<span class="doc-icon">📄</span>' +
+              '<span class="doc-date">' + formattedDate + '</span>' +
+              '<span class="doc-badge ' + badgeClass + '">' + badgeText + '</span>' +
+            '</div>' +
+            '<div class="doc-meta">' +
+              '<span>' + dict.docId + ': ' + record.documentId + '</span>' +
+              '<span>•</span>' +
+              '<span>' + charCount + ' ' + dict.docChars + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<span style="color: var(--text-dim); font-size: 13px; margin-left: 8px;">▼</span>';
+
+        var contentEl = document.createElement('div');
+        contentEl.className = 'doc-content';
+
+        var preEl = document.createElement('pre');
+        preEl.className = 'doc-pre';
+        preEl.textContent = fullText || '(No content)';
+
+        var actionsEl = document.createElement('div');
+        actionsEl.className = 'doc-actions';
+
+        var copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = dict.copyBtn;
+
+        copyBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(fullText).then(function() {
+              copyBtn.textContent = dict.copiedToast;
+              setTimeout(function() { copyBtn.textContent = dict.copyBtn; }, 1800);
+            });
+          } else {
+            var tempInput = document.createElement('textarea');
+            tempInput.value = fullText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            copyBtn.textContent = dict.copiedToast;
+            setTimeout(function() { copyBtn.textContent = dict.copyBtn; }, 1800);
+          }
+        });
+
+        actionsEl.appendChild(copyBtn);
+        contentEl.appendChild(preEl);
+        contentEl.appendChild(actionsEl);
+
+        headerEl.addEventListener('click', function() {
+          var isOpen = contentEl.classList.toggle('open');
+          var arrow = headerEl.querySelector('span:last-child');
+          if (arrow) arrow.textContent = isOpen ? '▲' : '▼';
+        });
+
+        itemEl.appendChild(headerEl);
+        itemEl.appendChild(contentEl);
+        container.appendChild(itemEl);
+      });
+    }
+
+    // ==========================================
+    // Web Audio API Rhythm Preview Engine
+    // ==========================================
+    var audioCtx = null;
+    var isAudioPlaying = false;
+    var activeAudioTimers = [];
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        var AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function stopMorseAudio() {
+      isAudioPlaying = false;
+      for (var i = 0; i < activeAudioTimers.length; i++) {
+        clearTimeout(activeAudioTimers[i]);
+      }
+      activeAudioTimers = [];
+
+      var btn = document.getElementById('btn_test_audio');
+      var txt = document.getElementById('txt_test_audio');
+      var badge = document.getElementById('test_status_badge');
+      var visualizer = document.getElementById('morse_visualizer');
+      var dict = i18nData[currentLang] || i18nData['en'];
+
+      if (btn) btn.classList.remove('is-playing');
+      if (txt) txt.textContent = dict.btnTestAudio;
+      if (badge) {
+        badge.textContent = dict.testStatusReady;
+        badge.classList.remove('active');
+      }
+      if (visualizer) visualizer.style.display = 'none';
+    }
+
+    function playMorseAudio() {
+      if (isAudioPlaying) {
+        stopMorseAudio();
+        return;
+      }
+
+      var ctx = getAudioContext();
+      if (!ctx) {
+        alert('Web Audio API is not supported on this browser.');
+        return;
+      }
+
+      isAudioPlaying = true;
+      var btn = document.getElementById('btn_test_audio');
+      var txt = document.getElementById('txt_test_audio');
+      var badge = document.getElementById('test_status_badge');
+      var visualizer = document.getElementById('morse_visualizer');
+      var codeDisplay = document.getElementById('morse_code_display');
+      var dict = i18nData[currentLang] || i18nData['en'];
+
+      if (btn) btn.classList.add('is-playing');
+      if (txt) txt.textContent = dict.btnStopAudio;
+      if (badge) {
+        badge.textContent = dict.testStatusPlaying;
+        badge.classList.add('active');
+      }
+
+      // "MORSE":
+      // M: --
+      // O: ---
+      // R: .-.
+      // S: ...
+      // E: .
+      var morsePattern = [
+        '-', '-', ' ',
+        '-', '-', '-', ' ',
+        '.', '-', '.', ' ',
+        '.', '.', '.', ' ',
+        '.'
+      ];
+
+      if (visualizer && codeDisplay) {
+        visualizer.style.display = 'block';
+        codeDisplay.innerHTML =
+          '<span style="color: var(--accent); font-weight: 700;">--</span> ' +
+          '<span style="color: var(--accent); font-weight: 700;">---</span> ' +
+          '<span style="color: var(--accent); font-weight: 700;">.-.</span> ' +
+          '<span style="color: var(--accent); font-weight: 700;">...</span> ' +
+          '<span style="color: var(--accent); font-weight: 700;">.</span>';
+      }
+
+      var unit = Number(currentOptions.unitMs) || 250;
+      var dotMs = unit;
+      var dashMs = unit * 3;
+      var intraMs = unit;
+      var interLetterMs = unit * 3;
+
+      var freq = 750; // High clarity training tone
+      var masterGain = ctx.createGain();
+      masterGain.gain.setValueAtTime(0.18, ctx.currentTime);
+      masterGain.connect(ctx.destination);
+
+      var currentTimeMs = 60;
+
+      for (var i = 0; i < morsePattern.length; i++) {
+        var symbol = morsePattern[i];
+        if (symbol === '.' || symbol === '-') {
+          var dur = symbol === '-' ? dashMs : dotMs;
+
+          (function(startMs, playDur) {
+            var tid = setTimeout(function() {
+              if (!isAudioPlaying) return;
+              try {
+                var osc = ctx.createOscillator();
+                var noteGain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+                noteGain.gain.setValueAtTime(0.0001, ctx.currentTime);
+                noteGain.gain.exponentialRampToValueAtTime(1.0, ctx.currentTime + 0.005);
+                noteGain.gain.setValueAtTime(1.0, ctx.currentTime + (playDur / 1000) - 0.005);
+                noteGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + (playDur / 1000));
+
+                osc.connect(noteGain);
+                noteGain.connect(masterGain);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + (playDur / 1000));
+              } catch (err) {
+                console.error(err);
+              }
+            }, startMs);
+            activeAudioTimers.push(tid);
+          })(currentTimeMs, dur);
+
+          currentTimeMs += dur;
+
+          if (i + 1 < morsePattern.length && morsePattern[i + 1] !== ' ') {
+            currentTimeMs += intraMs;
+          }
+        } else if (symbol === ' ') {
+          currentTimeMs += interLetterMs;
+        }
+      }
+
+      var finishTid = setTimeout(function() {
+        stopMorseAudio();
+      }, currentTimeMs + 300);
+      activeAudioTimers.push(finishTid);
+    }
+
+    // ==========================================
+    // Event Listeners
+    // ==========================================
+    function setupEventListeners() {
+      var dot = document.getElementById('dot-source');
+      var line = document.getElementById('line-source');
+      var confirm = document.getElementById('confirm-source');
+      var range = document.getElementById('unit-ms-range');
+      var use3 = document.getElementById('use-3-units');
+      var use7 = document.getElementById('use-7-units');
+      var visual = document.getElementById('visual-feedback');
+
+      dot.addEventListener('change', function(e) {
+        currentOptions.dotInputSource = Number(e.target.value);
+        validate();
+      });
+
+      line.addEventListener('change', function(e) {
+        currentOptions.lineInputSource = Number(e.target.value);
+        validate();
+      });
+
+      confirm.addEventListener('change', function(e) {
+        currentOptions.confirm_input_source = Number(e.target.value);
+        validate();
+      });
+
+      range.addEventListener('input', function(e) {
+        var val = Number(e.target.value);
+        currentOptions.unitMs = val;
+        updateUnitDisplay(val);
+        syncSpeedPreset(val);
+        validate();
+      });
+
+      use3.addEventListener('change', function(e) {
+        currentOptions.use_3_units = e.target.checked ? 1 : 0;
+      });
+
+      use7.addEventListener('change', function(e) {
+        currentOptions.use_7_units = e.target.checked ? 1 : 0;
+      });
+
+      visual.addEventListener('change', function(e) {
+        currentOptions.visualFeedback = e.target.checked ? 1 : 0;
+      });
+
+      // Speed Level Buttons
+      document.querySelectorAll('.speed-btn-grid .sub-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var lvl = Number(btn.getAttribute('data-level'));
+          if (lvl >= 1 && lvl <= 6) {
+            currentOptions.speedLevel = lvl;
+            currentOptions.unitMs = LEVEL_UNITS[lvl - 1];
+            updateUnitDisplay(currentOptions.unitMs);
+            syncSpeedPreset(currentOptions.unitMs);
+            validate();
+          }
+        });
+      });
+
+      // Test Audio Button
+      document.getElementById('btn_test_audio').addEventListener('click', function() {
+        playMorseAudio();
+      });
+
+      // Cancel Button
+      document.getElementById('btn-cancel').addEventListener('click', function() {
+        var returnTo = getQueryParam('return_to', 'pebblejs://close');
+        document.location = returnTo;
+      });
+
+      // Save Button
+      document.getElementById('btn-save').addEventListener('click', function() {
+        if (!validate()) return;
+
+        var result = {
+          options: {
+            version: Number(currentOptions.version),
+            dotInputSource: Number(currentOptions.dotInputSource),
+            lineInputSource: Number(currentOptions.lineInputSource),
+            confirm_input_source: Number(currentOptions.confirm_input_source),
+            use_3_units: Number(currentOptions.use_3_units),
+            use_7_units: Number(currentOptions.use_7_units),
+            speedLevel: Number(currentOptions.speedLevel),
+            unitMs: Number(currentOptions.unitMs),
+            visualFeedback: currentOptions.visualFeedback ? 1 : 0
+          }
+        };
+
+        var returnTo = getQueryParam('return_to', 'pebblejs://close#');
+        var sep = (returnTo.indexOf('#') === -1) ? '#' : '';
+        var returnUri = returnTo + sep + encodeURIComponent(JSON.stringify(result));
+        document.location = returnUri;
+      });
+    }
+
+    // ==========================================
+    // Initialization
+    // ==========================================
+    function init() {
+      initPayload();
+
+      // UI state initialization
+      document.getElementById('use-3-units').checked = currentOptions.use_3_units === 1;
+      document.getElementById('use-7-units').checked = currentOptions.use_7_units === 1;
+      document.getElementById('visual-feedback').checked = currentOptions.visualFeedback !== 0;
+
+      updateUnitDisplay(currentOptions.unitMs);
+      syncSpeedPreset(currentOptions.unitMs);
+
+      detectLanguage();
+      setupEventListeners();
+      renderDocuments();
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
 </body>
 </html>
