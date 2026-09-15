@@ -1065,7 +1065,7 @@
       use_3_units: 0,
       use_7_units: 0,
       training_mode: 0, tolerance_percent: 10,
-      novice_policy: 12, intermediate_policy: 4, advanced_policy: 3, touch_layout: 2,
+      novice_policy: 12, intermediate_policy: 4, advanced_policy: 3, touch_layout: 3,
       speedLevel: 3,
       unitMs: 250,
       visualFeedback: 1
@@ -1212,7 +1212,7 @@ function duplicateButtons(sources) {
     }
     function bindTraining() {
       document.getElementById('touch-axis').addEventListener('change',function(e) {
-        currentOptions.touch_layout = Number(e.target.value) * 2 + (currentOptions.touch_layout & 1);
+        currentOptions.touch_layout = Number(e.target.value) === 1 ? 3 : 0;
         renderTouchLayout(); validate();
       });
       document.getElementById('touch-layout').addEventListener('change',function(e) {
