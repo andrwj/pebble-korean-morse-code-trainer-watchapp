@@ -709,6 +709,8 @@
     .btn-save:hover {
       box-shadow: 0 6px 20px rgba(56, 189, 248, 0.45);
     }
+    .mode-policy-table select { min-width: 90px; padding: 8px 22px 8px 8px; font-size: 12px; }
+    .mode-policy-table th { font-size: 12px; }
   </style>
 </head>
 <body>
@@ -738,13 +740,29 @@
     </div>
 
     <div class="card">
+      <div class="card-label">Primary · 터치 입력</div>
+      <div class="card-desc">처음 누른 위치로 역할을 정합니다. 이동 중 중앙을 넘어도 역할은 바뀌지 않습니다.</div>
+      <select id="touch-layout" class="select-input" aria-label="터치 영역">
+        <option value="0">왼쪽 점·선 / 오른쪽 글자 완성·띄어쓰기</option>
+        <option value="1">오른쪽 점·선 / 왼쪽 글자 완성·띄어쓰기</option>
+      </select>
+      <div class="divider"></div>
+      <label class="card-label" for="training-mode">연습 모드</label>
+      <select id="training-mode" class="select-input"><option value="0">초급 · NoviceMode</option><option value="1">중급 · IntermediateMode</option><option value="2">상급 · AdvancedMode</option></select>
+      <div class="divider"></div>
+      <label class="card-label" for="tolerance-percent">허용오차</label>
+      <select id="tolerance-percent" class="select-input"><option value="0">0%</option><option value="5">5%</option><option value="10">10%</option><option value="15">15%</option><option value="20">20%</option><option value="30">30%</option></select>
+      <div class="card-desc">모드별 표에서 이 허용오차를 적용할지 선택합니다.</div>
+    </div>
+    <div class="section-title">Secondary · 보조 물리 버튼 (선택 사항)</div>
+    <div class="card">
       <div class="card-row">
         <div class="card-info">
           <div class="card-label">
             <span style="color: var(--accent);">•</span>
             <span data-i18n="dotSourceLabel">점(·) 입력</span>
           </div>
-          <div class="card-desc" data-i18n="dotSourceDesc">모스 부호의 짧은 신호(Dot)를 생성할 제스처 또는 버튼을 선택합니다.</div>
+          <div class="card-desc" data-i18n="dotSourceDesc">점을 입력할 보조 버튼을 선택합니다. 기본값은 사용 안 함입니다.</div>
         </div>
       </div>
       <div style="margin-top: 10px;">
@@ -759,7 +777,7 @@
             <span style="color: var(--accent-secondary); font-size: 18px; line-height: 1;">—</span>
             <span data-i18n="lineSourceLabel">선(—) 입력</span>
           </div>
-          <div class="card-desc" data-i18n="lineSourceDesc">모스 부호의 긴 신호(Dash)를 생성할 제스처 또는 버튼을 선택합니다.</div>
+          <div class="card-desc" data-i18n="lineSourceDesc">선을 입력할 보조 버튼을 선택합니다. 기본값은 사용 안 함입니다.</div>
         </div>
       </div>
       <div style="margin-top: 10px;">
@@ -840,29 +858,20 @@
 
       <div class="divider"></div>
 
-      <div class="card-row">
-        <div class="card-info">
-          <div class="card-label" data-i18n="use3UnitsLabel">3-Units 자동 글자 완성</div>
-          <div class="card-desc" data-i18n="use3UnitsDesc">점 길이의 3배(3-Units) 동안 쉴 때 글자 입력을 자동으로 반영합니다. 끄면 수동 확인 동작으로만 완성합니다.</div>
-        </div>
-        <label class="switch">
-          <input type="checkbox" id="use-3-units">
-          <span class="slider-track"></span>
-        </label>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="card-row">
-        <div class="card-info">
-          <div class="card-label" data-i18n="use7UnitsLabel">7-Units 자동 띄어쓰기</div>
-          <div class="card-desc" data-i18n="use7UnitsDesc">마지막 입력 후 점 길이의 7배(7-Units) 동안 쉴 때 띄어쓰기를 삽입합니다. 끄면 수동 띄어쓰기를 사용합니다.</div>
-        </div>
-        <label class="switch">
-          <input type="checkbox" id="use-7-units">
-          <span class="slider-track"></span>
-        </label>
-      </div>
+      <div class="card-label">모드별 적용 규칙</div>
+      <div class="card-desc">모드는 아래 규칙을 선택합니다. 허용오차 값은 모드와 별개입니다.</div>
+      <div style="overflow-x:auto; margin-top:12px;">
+      <table class="mode-policy-table" style="width:100%; min-width:480px; border-collapse:collapse; text-align:left;">
+      <thead><tr><th>규칙</th><th>초급 · Novice</th><th>중급 · Intermediate</th><th>상급 · Advanced</th></tr></thead><tbody>
+<tr><th style="padding:10px 4px;">3-Units 자동 입력 완성</th><td><select aria-label="novice 3-Units 자동 입력 완성" id="policy-novice-1" class="select-input"><option value="0">사용 안 함</option><option value="1">사용</option></select></td><td><select aria-label="intermediate 3-Units 자동 입력 완성" id="policy-intermediate-1" class="select-input"><option value="0">사용 안 함</option><option value="1">사용</option></select></td><td><select aria-label="advanced 3-Units 자동 입력 완성" id="policy-advanced-1" class="select-input"><option value="0">사용 안 함</option><option value="1">사용</option></select></td></tr>
+<tr><th style="padding:10px 4px;">7-Units 자동 띄어쓰기</th><td><select aria-label="novice 7-Units 자동 띄어쓰기" id="policy-novice-2" class="select-input"><option value="0">사용 안 함</option><option value="1">사용</option></select></td><td><select aria-label="intermediate 7-Units 자동 띄어쓰기" id="policy-intermediate-2" class="select-input"><option value="0">사용 안 함</option><option value="1">사용</option></select></td><td><select aria-label="advanced 7-Units 자동 띄어쓰기" id="policy-advanced-2" class="select-input"><option value="0">사용 안 함</option><option value="1">사용</option></select></td></tr>
+<tr><th style="padding:10px 4px;">선택한 허용오차 적용</th><td><select aria-label="novice 선택한 허용오차 적용" id="policy-novice-4" class="select-input"><option value="0">사용 안 함</option><option value="1">사용</option></select></td><td><select aria-label="intermediate 선택한 허용오차 적용" id="policy-intermediate-4" class="select-input"><option value="0">사용 안 함</option><option value="1">사용</option></select></td><td><select aria-label="advanced 선택한 허용오차 적용" id="policy-advanced-4" class="select-input"><option value="0">사용 안 함</option><option value="1">사용</option></select></td></tr>
+<tr><th style="padding:10px 4px;">3-Units 초과 누름 허용</th><td><select aria-label="novice 3-Units 초과 누름 허용" id="policy-novice-8" class="select-input"><option value="0">사용 안 함</option><option value="1">사용</option></select></td><td><select aria-label="intermediate 3-Units 초과 누름 허용" id="policy-intermediate-8" class="select-input"><option value="0">사용 안 함</option><option value="1">사용</option></select></td><td><select aria-label="advanced 3-Units 초과 누름 허용" id="policy-advanced-8" class="select-input"><option value="0">사용 안 함</option><option value="1">사용</option></select></td></tr>
+<tr><th style="padding:10px 4px;">1-unit 초과 시 dash 표시</th><td><select class="select-input" disabled aria-label="1-unit 초과 시 dash 표시"><option>항상 사용</option></select></td><td><select class="select-input" disabled aria-label="1-unit 초과 시 dash 표시"><option>항상 사용</option></select></td><td><select class="select-input" disabled aria-label="1-unit 초과 시 dash 표시"><option>항상 사용</option></select></td></tr>
+<tr><th style="padding:10px 4px;">마지막 노드 자동 인식</th><td><select class="select-input" disabled aria-label="마지막 노드 자동 인식"><option>항상 사용</option></select></td><td><select class="select-input" disabled aria-label="마지막 노드 자동 인식"><option>항상 사용</option></select></td><td><select class="select-input" disabled aria-label="마지막 노드 자동 인식"><option>항상 사용</option></select></td></tr>
+<tr><th style="padding:10px 4px;">수동 글자 경계 지정</th><td><select class="select-input" disabled aria-label="수동 글자 경계 지정"><option>항상 사용</option></select></td><td><select class="select-input" disabled aria-label="수동 글자 경계 지정"><option>항상 사용</option></select></td><td><select class="select-input" disabled aria-label="수동 글자 경계 지정"><option>항상 사용</option></select></td></tr>
+      </tbody></table></div>
+      <div class="callout-box">허용오차는 3U 상한에 적용됩니다. 예: 10% → 3.3U까지 허용. 1U를 넘으면 dash로 표시하는 기준은 바뀌지 않습니다. 초과 누름을 허용하면 상한을 넘겨도 dash로 입력합니다.</div>
     </div>
 
     <!-- Section 3: Feedback & Audio Simulator -->
@@ -937,9 +946,9 @@
         subtitle: "Pebble 햅틱 & 제스처 모스 부호 입력 훈련기",
         inputSectionTitle: "입력 제스처 및 키 매핑",
         dotSourceLabel: "점(·) 입력",
-        dotSourceDesc: "모스 부호의 짧은 신호(Dot)를 생성할 제스처 또는 버튼을 선택합니다.",
+        dotSourceDesc: "점을 입력할 보조 버튼을 선택합니다. 기본값은 사용 안 함입니다.",
         lineSourceLabel: "선(—) 입력",
-        lineSourceDesc: "모스 부호의 긴 신호(Dash)를 생성할 제스처 또는 버튼을 선택합니다.",
+        lineSourceDesc: "선을 입력할 보조 버튼을 선택합니다. 기본값은 사용 안 함입니다.",
         confirmSourceLabel: "글자 완성 / 띄어쓰기",
         confirmSourceDesc: "조합 중인 자모를 음절로 확정하거나 새 입력이 없을 때 띄어쓰기를 수행합니다.",
         speedSectionTitle: "입력 속도 및 단위 시간 (Timing)",
@@ -986,9 +995,9 @@
         subtitle: "Pebble Haptic & Gesture Morse Code Training System",
         inputSectionTitle: "Gesture & Key Mapping",
         dotSourceLabel: "Dot (·) Input",
-        dotSourceDesc: "Select gesture or button to trigger a short signal (Dot).",
+        dotSourceDesc: "Select optional secondary button to trigger a short signal (Dot).",
         lineSourceLabel: "Dash (—) Input",
-        lineSourceDesc: "Select gesture or button to trigger a long signal (Dash).",
+        lineSourceDesc: "Select optional secondary button to trigger a long signal (Dash).",
         confirmSourceLabel: "Commit / Word Gap",
         confirmSourceDesc: "Commit composed jamo into a syllable, or insert a space when paused.",
         speedSectionTitle: "Input Speed & Timing Units",
@@ -1034,20 +1043,7 @@
     var currentLang = 'ko';
 
     var SOURCES_DEF = [
-      { id: 1, group: 'touch', en: 'Touch Down', ko: '터치 누름 (Touch Down)' },
-      { id: 2, group: 'touch', en: 'Touch Up', ko: '터치 뗌 (Touch Up)' },
-      { id: 3, group: 'touch', en: 'Touch Short Hold', ko: '터치 짧게 누름 (Short Hold)' },
-      { id: 4, group: 'touch', en: 'Touch Long Hold', ko: '터치 길게 누름 (Long Hold)' },
-      { id: 5, group: 'touch', en: 'Touch Tap', ko: '터치 탭 (Tap)' },
-      { id: 6, group: 'touch', en: 'Touch Double Tap', ko: '터치 더블 탭 (Double Tap)' },
-      { id: 7, group: 'touch', en: 'Swipe Up', ko: '위로 스와이프 (Swipe Up)' },
-      { id: 8, group: 'touch', en: 'Swipe Down', ko: '아래로 스와이프 (Swipe Down)' },
-      { id: 9, group: 'touch', en: 'Swipe Left', ko: '왼쪽으로 스와이프 (Swipe Left)' },
-      { id: 10, group: 'touch', en: 'Swipe Right', ko: '오른쪽으로 스와이프 (Swipe Right)' },
-      { id: 11, group: 'touch', en: 'Drag Up', ko: '위로 드래그 (Drag Up)' },
-      { id: 12, group: 'touch', en: 'Drag Down', ko: '아래로 드래그 (Drag Down)' },
-      { id: 13, group: 'touch', en: 'Drag Left', ko: '왼쪽으로 드래그 (Drag Left)' },
-      { id: 14, group: 'touch', en: 'Drag Right', ko: '오른쪽으로 드래그 (Drag Right)' },
+      { id: 0, group: 'button', en: 'Disabled', ko: '사용 안 함' },
       { id: 15, group: 'button', en: 'UP Single Click', ko: '위(UP) 버튼 클릭' },
       { id: 16, group: 'button', en: 'UP Long Click', ko: '위(UP) 버튼 길게 누름' },
       { id: 17, group: 'button', en: 'SELECT Single Click', ko: '가운데(SELECT) 버튼 클릭' },
@@ -1059,12 +1055,14 @@
     var LEVEL_UNITS = [400, 320, 250, 200, 160, 120];
 
     var DEFAULT_OPTIONS = {
-      version: 2,
-      dotInputSource: 3,
-      lineInputSource: 4,
-      confirm_input_source: 10,
+      version: 3,
+      dotInputSource: 0,
+      lineInputSource: 0,
+      confirm_input_source: 0,
       use_3_units: 0,
       use_7_units: 0,
+      training_mode: 0, tolerance_percent: 10,
+      novice_policy: 12, intermediate_policy: 4, advanced_policy: 3, touch_layout: 0,
       speedLevel: 3,
       unitMs: 250,
       visualFeedback: 1
@@ -1115,6 +1113,13 @@
       }
 
       var opt = payload.options || {};
+      currentOptions.training_mode = opt.training_mode !== undefined ? Number(opt.training_mode) : DEFAULT_OPTIONS.training_mode;
+      currentOptions.tolerance_percent = opt.tolerance_percent !== undefined ? Number(opt.tolerance_percent) : DEFAULT_OPTIONS.tolerance_percent;
+      currentOptions.novice_policy = opt.novice_policy !== undefined ? Number(opt.novice_policy) : DEFAULT_OPTIONS.novice_policy;
+      currentOptions.intermediate_policy = opt.intermediate_policy !== undefined ? Number(opt.intermediate_policy) : DEFAULT_OPTIONS.intermediate_policy;
+      currentOptions.advanced_policy = opt.advanced_policy !== undefined ? Number(opt.advanced_policy) : DEFAULT_OPTIONS.advanced_policy;
+      currentOptions.touch_layout = opt.touch_layout !== undefined ? Number(opt.touch_layout) : DEFAULT_OPTIONS.touch_layout;
+
       currentOptions.version = opt.version !== undefined ? Number(opt.version) : DEFAULT_OPTIONS.version;
       currentOptions.dotInputSource = opt.dotInputSource !== undefined ? Number(opt.dotInputSource) : DEFAULT_OPTIONS.dotInputSource;
       currentOptions.lineInputSource = opt.lineInputSource !== undefined ? Number(opt.lineInputSource) : DEFAULT_OPTIONS.lineInputSource;
@@ -1152,12 +1157,58 @@
         }
       });
 
-      selectEl.appendChild(touchGroup);
       selectEl.appendChild(btnGroup);
 
       if (prevVal !== undefined) {
         selectEl.value = String(prevVal);
       }
+    }
+
+function validTraining(options) {
+  return [0,1,2].indexOf(Number(options.training_mode)) >= 0 &&
+    [0,1].indexOf(Number(options.touch_layout)) >= 0 &&
+    [0,5,10,15,20,30].indexOf(Number(options.tolerance_percent)) >= 0 &&
+    ['novice_policy','intermediate_policy','advanced_policy'].every(function(k) {
+      var n = Number(options[k]); return isFinite(n) && Math.floor(n) === n && n >= 0 && n <= 15;
+    });
+}
+function duplicateButtons(sources) {
+  return sources.some(function(v,i) { return v !== 0 && sources.some(function(w,j) {
+    return j < i && w !== 0 && Math.floor((v-15)/2) === Math.floor((w-15)/2);
+  }); });
+}
+
+    function syncPolicy() {
+      var name = ['novice_policy','intermediate_policy','advanced_policy'][currentOptions.training_mode];
+      var value = currentOptions[name];
+      currentOptions.use_3_units = value & 1 ? 1 : 0;
+      currentOptions.use_7_units = value & 2 ? 1 : 0;
+    }
+    function renderTraining() {
+      [['training-mode','training_mode'],['tolerance-percent','tolerance_percent'],['touch-layout','touch_layout']].forEach(function(pair) {
+        document.getElementById(pair[0]).value = String(currentOptions[pair[1]]);
+      });
+      ['novice','intermediate','advanced'].forEach(function(mode) {
+        [1,2,4,8].forEach(function(bit) {
+          document.getElementById('policy-'+mode+'-'+bit).value = currentOptions[mode+'_policy'] & bit ? '1' : '0';
+        });
+      });
+      syncPolicy();
+    }
+    function bindTraining() {
+      [['training-mode','training_mode'],['tolerance-percent','tolerance_percent'],['touch-layout','touch_layout']].forEach(function(pair) {
+        document.getElementById(pair[0]).addEventListener('change',function(e) {
+          currentOptions[pair[1]] = Number(e.target.value); syncPolicy(); validate();
+        });
+      });
+      ['novice','intermediate','advanced'].forEach(function(mode) {
+        [1,2,4,8].forEach(function(bit) {
+          document.getElementById('policy-'+mode+'-'+bit).addEventListener('change',function(e) {
+            currentOptions[mode+'_policy'] = (currentOptions[mode+'_policy'] & ~bit) | (Number(e.target.value) ? bit : 0);
+            syncPolicy(); validate();
+          });
+        });
+      });
     }
 
     function populateAllSelects() {
@@ -1254,15 +1305,10 @@
       var confirmVal = Number(confirm.value);
       var unitMs = Number(currentOptions.unitMs);
 
-      // Confirm helper text
-      if (confirmVal === 10) {
-        confirmHelp.textContent = dict.confirmRightHelp;
-      } else {
-        confirmHelp.textContent = dict.confirmGeneralHelp;
-      }
+      confirmHelp.textContent = currentLang === 'ko' ? 'Primary: 왼쪽은 점·선, 오른쪽은 글자 완성·띄어쓰기 (좌우 반전 가능). Secondary 버튼은 선택 사항입니다.' : 'Primary: left for marks, right for completion/space (reversible). Secondary buttons are optional.';
 
       // Check duplicates
-      var isDuplicate = (dotVal === lineVal) || (dotVal === confirmVal) || (lineVal === confirmVal);
+      var isDuplicate = duplicateButtons([dotVal,lineVal,confirmVal]);
 
       // Check valid sources
       var isValidSources = [dotVal, lineVal, confirmVal].every(function(v) {
@@ -1273,14 +1319,14 @@
       var isUnitValid = isFinite(unitMs) && Math.floor(unitMs) === unitMs && unitMs >= 80 && unitMs <= 600;
 
       // Check Version & Payload
-      var isVersionValid = Number(currentOptions.version) === 2;
+      var isVersionValid = Number(currentOptions.version) === 3;
 
       var errorMsg = '';
       if (!isVersionValid) {
         errorMsg = dict.errPayloadVersion;
       } else if (isDuplicate) {
         errorMsg = dict.errDuplicate;
-      } else if (!isValidSources) {
+      } else if (!isValidSources || !validTraining(currentOptions)) {
         errorMsg = dict.errIncomplete;
       } else if (!isUnitValid) {
         errorMsg = dict.errUnitRange;
@@ -1558,12 +1604,11 @@
     // Event Listeners
     // ==========================================
     function setupEventListeners() {
+      bindTraining();
       var dot = document.getElementById('dot-source');
       var line = document.getElementById('line-source');
       var confirm = document.getElementById('confirm-source');
       var range = document.getElementById('unit-ms-range');
-      var use3 = document.getElementById('use-3-units');
-      var use7 = document.getElementById('use-7-units');
       var visual = document.getElementById('visual-feedback');
 
       dot.addEventListener('change', function(e) {
@@ -1587,14 +1632,6 @@
         updateUnitDisplay(val);
         syncSpeedPreset(val);
         validate();
-      });
-
-      use3.addEventListener('change', function(e) {
-        currentOptions.use_3_units = e.target.checked ? 1 : 0;
-      });
-
-      use7.addEventListener('change', function(e) {
-        currentOptions.use_7_units = e.target.checked ? 1 : 0;
       });
 
       visual.addEventListener('change', function(e) {
@@ -1633,6 +1670,13 @@
         var result = {
           options: {
             version: Number(currentOptions.version),
+            training_mode: Number(currentOptions.training_mode),
+            tolerance_percent: Number(currentOptions.tolerance_percent),
+            novice_policy: Number(currentOptions.novice_policy),
+            intermediate_policy: Number(currentOptions.intermediate_policy),
+            advanced_policy: Number(currentOptions.advanced_policy),
+            touch_layout: Number(currentOptions.touch_layout),
+
             dotInputSource: Number(currentOptions.dotInputSource),
             lineInputSource: Number(currentOptions.lineInputSource),
             confirm_input_source: Number(currentOptions.confirm_input_source),
@@ -1658,8 +1702,7 @@
       initPayload();
 
       // UI state initialization
-      document.getElementById('use-3-units').checked = currentOptions.use_3_units === 1;
-      document.getElementById('use-7-units').checked = currentOptions.use_7_units === 1;
+      renderTraining();
       document.getElementById('visual-feedback').checked = currentOptions.visualFeedback !== 0;
 
       updateUnitDisplay(currentOptions.unitMs);
