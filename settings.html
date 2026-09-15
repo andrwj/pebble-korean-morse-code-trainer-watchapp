@@ -742,6 +742,9 @@
     <div class="card">
       <div class="card-label">Primary · 터치 입력</div>
       <div class="card-desc">처음 누른 위치로 역할을 정합니다. 이동 중 중앙을 넘어도 역할은 바뀌지 않습니다.</div>
+      <label class="card-label" for="touch-axis">나누는 기준</label>
+      <select id="touch-axis" class="select-input"><option value="0">왼쪽 / 오른쪽</option><option value="1">위 / 아래</option></select>
+      <label class="card-label" for="touch-layout">영역별 역할</label>
       <select id="touch-layout" class="select-input" aria-label="터치 영역">
         <option value="0">왼쪽 점·선 / 오른쪽 글자 완성·띄어쓰기</option>
         <option value="1">오른쪽 점·선 / 왼쪽 글자 완성·띄어쓰기</option>
@@ -1062,7 +1065,7 @@
       use_3_units: 0,
       use_7_units: 0,
       training_mode: 0, tolerance_percent: 10,
-      novice_policy: 12, intermediate_policy: 4, advanced_policy: 3, touch_layout: 0,
+      novice_policy: 12, intermediate_policy: 4, advanced_policy: 3, touch_layout: 2,
       speedLevel: 3,
       unitMs: 250,
       visualFeedback: 1
@@ -1166,7 +1169,7 @@
 
 function validTraining(options) {
   return [0,1,2].indexOf(Number(options.training_mode)) >= 0 &&
-    [0,1].indexOf(Number(options.touch_layout)) >= 0 &&
+    [0,1,2,3].indexOf(Number(options.touch_layout)) >= 0 &&
     [0,5,10,15,20,30].indexOf(Number(options.tolerance_percent)) >= 0 &&
     ['novice_policy','intermediate_policy','advanced_policy'].every(function(k) {
       var n = Number(options[k]); return isFinite(n) && Math.floor(n) === n && n >= 0 && n <= 15;
@@ -1184,8 +1187,20 @@ function duplicateButtons(sources) {
       currentOptions.use_3_units = value & 1 ? 1 : 0;
       currentOptions.use_7_units = value & 2 ? 1 : 0;
     }
+    function renderTouchLayout() {
+      var vertical = (currentOptions.touch_layout & 2) !== 0;
+      document.getElementById('touch-axis').value = vertical ? '1' : '0';
+      var labels = vertical ? ['위쪽 점·선 / 아래쪽 글자 완성·띄어쓰기','아래쪽 점·선 / 위쪽 글자 완성·띄어쓰기'] : ['왼쪽 점·선 / 오른쪽 글자 완성·띄어쓰기','오른쪽 점·선 / 왼쪽 글자 완성·띄어쓰기'];
+      var select = document.getElementById('touch-layout');
+      select.innerHTML = '';
+      labels.forEach(function(label,index) {
+        var option = document.createElement('option'); option.value = String(index); option.textContent = label; select.appendChild(option);
+      });
+      select.value = String(currentOptions.touch_layout & 1);
+    }
     function renderTraining() {
-      [['training-mode','training_mode'],['tolerance-percent','tolerance_percent'],['touch-layout','touch_layout']].forEach(function(pair) {
+      renderTouchLayout();
+      [['training-mode','training_mode'],['tolerance-percent','tolerance_percent']].forEach(function(pair) {
         document.getElementById(pair[0]).value = String(currentOptions[pair[1]]);
       });
       ['novice','intermediate','advanced'].forEach(function(mode) {
@@ -1196,7 +1211,15 @@ function duplicateButtons(sources) {
       syncPolicy();
     }
     function bindTraining() {
-      [['training-mode','training_mode'],['tolerance-percent','tolerance_percent'],['touch-layout','touch_layout']].forEach(function(pair) {
+      document.getElementById('touch-axis').addEventListener('change',function(e) {
+        currentOptions.touch_layout = Number(e.target.value) * 2 + (currentOptions.touch_layout & 1);
+        renderTouchLayout(); validate();
+      });
+      document.getElementById('touch-layout').addEventListener('change',function(e) {
+        currentOptions.touch_layout = (currentOptions.touch_layout & 2) + Number(e.target.value);
+        validate();
+      });
+      [['training-mode','training_mode'],['tolerance-percent','tolerance_percent']].forEach(function(pair) {
         document.getElementById(pair[0]).addEventListener('change',function(e) {
           currentOptions[pair[1]] = Number(e.target.value); syncPolicy(); validate();
         });
@@ -1305,7 +1328,7 @@ function duplicateButtons(sources) {
       var confirmVal = Number(confirm.value);
       var unitMs = Number(currentOptions.unitMs);
 
-      confirmHelp.textContent = currentLang === 'ko' ? 'Primary: 왼쪽은 점·선, 오른쪽은 글자 완성·띄어쓰기 (좌우 반전 가능). Secondary 버튼은 선택 사항입니다.' : 'Primary: left for marks, right for completion/space (reversible). Secondary buttons are optional.';
+      confirmHelp.textContent = currentLang === 'ko' ? 'Primary: 선택한 나누는 기준과 영역별 역할을 적용합니다. Secondary 버튼은 선택 사항입니다.' : 'Primary: touch uses the selected split and region roles. Secondary buttons are optional.';
 
       // Check duplicates
       var isDuplicate = duplicateButtons([dotVal,lineVal,confirmVal]);
