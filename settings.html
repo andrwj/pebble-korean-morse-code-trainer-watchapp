@@ -761,49 +761,6 @@
     <div class="card">
       <div class="card-row">
         <div class="card-info">
-          <div class="card-label">
-            <span style="color: var(--accent);">•</span>
-            <span data-i18n="dotSourceLabel">점(·) 입력</span>
-          </div>
-          <div class="card-desc" data-i18n="dotSourceDesc">점을 입력할 보조 버튼을 선택합니다. 기본값은 사용 안 함입니다.</div>
-        </div>
-      </div>
-      <div style="margin-top: 10px;">
-        <select id="dot-source" class="select-input"></select>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="card-row">
-        <div class="card-info">
-          <div class="card-label">
-            <span style="color: var(--accent-secondary); font-size: 18px; line-height: 1;">—</span>
-            <span data-i18n="lineSourceLabel">선(—) 입력</span>
-          </div>
-          <div class="card-desc" data-i18n="lineSourceDesc">선을 입력할 보조 버튼을 선택합니다. 기본값은 사용 안 함입니다.</div>
-        </div>
-      </div>
-      <div style="margin-top: 10px;">
-        <select id="line-source" class="select-input"></select>
-      </div>
-
-      <div class="divider"></div>
-
-      <div class="card-row">
-        <div class="card-info">
-          <div class="card-label">
-            <span>↵</span>
-            <span data-i18n="confirmSourceLabel">글자 완성 / 띄어쓰기</span>
-          </div>
-          <div class="card-desc" data-i18n="confirmSourceDesc">조합 중인 자모를 음절로 확정하거나 새 입력이 없을 때 띄어쓰기를 수행합니다.</div>
-        </div>
-      </div>
-      <div style="margin-top: 10px;">
-        <select id="confirm-source" class="select-input"></select>
-      </div>
-      <div class="divider"></div>
-      <div class="card-row">
-        <div class="card-info">
           <div class="card-label" data-i18n="cancelSourceLabel">현재 글자 취소</div>
           <div class="card-desc" data-i18n="cancelSourceDesc">현재 조합 중인 한 글자와 모르스 입력을 취소합니다. 기본값은 위(UP) 버튼 한 번 클릭입니다.</div>
         </div>
@@ -968,12 +925,6 @@
         title: "한국어 모스 트레이너",
         subtitle: "Pebble 햅틱 & 제스처 모스 부호 입력 훈련기",
         inputSectionTitle: "입력 제스처 및 키 매핑",
-        dotSourceLabel: "점(·) 입력",
-        dotSourceDesc: "점을 입력할 보조 버튼을 선택합니다. 기본값은 사용 안 함입니다.",
-        lineSourceLabel: "선(—) 입력",
-        lineSourceDesc: "선을 입력할 보조 버튼을 선택합니다. 기본값은 사용 안 함입니다.",
-        confirmSourceLabel: "글자 완성 / 띄어쓰기",
-        confirmSourceDesc: "조합 중인 자모를 음절로 확정하거나 새 입력이 없을 때 띄어쓰기를 수행합니다.",
         speedSectionTitle: "입력 속도 및 단위 시간 (Timing)",
         speedLevelLabel: "입력 속도 프리셋",
         speedLevelDesc: "훈련 숙련도에 맞춰 기본 템포 단계를 빠르게 선택할 수 있습니다.",
@@ -1007,12 +958,10 @@
         cancelSourceDesc: "현재 조합 중인 한 글자와 모르스 입력을 취소합니다. 기본값은 위(UP) 버튼 한 번 클릭입니다.",
         clearSourceLabel: "전체 입력 지우기",
         clearSourceDesc: "시계의 입력 문장과 조합을 모두 지웁니다. 기본값은 위(UP) 버튼 길게 누르기입니다.",
-        errDuplicate: "오류: 점(·), 선(—), 글자 완성, 현재 글자 취소, 전체 입력 지우기는 서로 다른 동작을 지정해야 합니다.",
+        errDuplicate: "오류: 현재 글자 취소와 전체 입력 지우기는 서로 다른 동작을 지정해야 합니다.",
         errUnitRange: "오류: 단위 시간(Unit Ms)은 80ms에서 600ms 사이의 정수여야 합니다.",
         errPayloadVersion: "주의: 시계의 최신 설정을 불러온 뒤 다시 열어 주세요.",
-        errIncomplete: "오류: 네 가지 입력 동작을 모두 선택해 주세요.",
-        confirmRightHelp: "오른쪽으로 밀어 글자 완성 · 완성 후 새 입력이 없으면 띄어쓰기",
-        confirmGeneralHelp: "선택한 동작으로 글자 완성 · 완성 후 새 입력이 없으면 띄어쓰기",
+        errIncomplete: "오류: 유효한 취소·지우기 동작과 연습 설정을 선택해 주세요.",
         groupTouch: "터치 제스처 (Touch Gestures)",
         groupButton: "하드웨어 버튼 (Hardware Buttons)"
       },
@@ -1021,12 +970,6 @@
         title: "Korean Morse Trainer",
         subtitle: "Pebble Haptic & Gesture Morse Code Training System",
         inputSectionTitle: "Gesture & Key Mapping",
-        dotSourceLabel: "Dot (·) Input",
-        dotSourceDesc: "Select optional secondary button to trigger a short signal (Dot).",
-        lineSourceLabel: "Dash (—) Input",
-        lineSourceDesc: "Select optional secondary button to trigger a long signal (Dash).",
-        confirmSourceLabel: "Commit / Word Gap",
-        confirmSourceDesc: "Commit composed jamo into a syllable, or insert a space when paused.",
         speedSectionTitle: "Input Speed & Timing Units",
         speedLevelLabel: "Speed Level Preset",
         speedLevelDesc: "Quickly select tempo according to your proficiency level.",
@@ -1060,12 +1003,10 @@
         cancelSourceDesc: "Cancel the current character and Morse input. Default: UP Single Click.",
         clearSourceLabel: "Clear All Input",
         clearSourceDesc: "Clear all text and composition on the watch. Default: UP Long Click.",
-        errDuplicate: "Error: Dot, Dash, Commit, Cancel, and Clear inputs must be assigned to different actions.",
+        errDuplicate: "Error: Cancel and Clear must be assigned to different actions.",
         errUnitRange: "Error: Unit duration must be an integer between 80ms and 600ms.",
         errPayloadVersion: "Notice: Please reload the latest settings from the watch and reopen.",
-        errIncomplete: "Error: Please select valid actions for all four inputs.",
-        confirmRightHelp: "Swipe right to commit · Space if no new input",
-        confirmGeneralHelp: "Selected action to commit · Space if no new input",
+        errIncomplete: "Error: Please select valid cancel/clear actions and training settings.",
         groupTouch: "Touch Gestures",
         groupButton: "Hardware Buttons"
       }
@@ -1086,10 +1027,7 @@
     var LEVEL_UNITS = [400, 320, 250, 200, 160, 120];
 
     var DEFAULT_OPTIONS = {
-      version: 5,
-      dotInputSource: 0,
-      lineInputSource: 0,
-      confirm_input_source: 0,
+      version: 6,
       clear_input_source: 16,
       cancel_input_source: 15,
       use_3_units: 0,
@@ -1154,9 +1092,6 @@
       currentOptions.touch_layout = opt.touch_layout !== undefined ? Number(opt.touch_layout) : DEFAULT_OPTIONS.touch_layout;
 
       currentOptions.version = opt.version !== undefined ? Number(opt.version) : DEFAULT_OPTIONS.version;
-      currentOptions.dotInputSource = opt.dotInputSource !== undefined ? Number(opt.dotInputSource) : DEFAULT_OPTIONS.dotInputSource;
-      currentOptions.lineInputSource = opt.lineInputSource !== undefined ? Number(opt.lineInputSource) : DEFAULT_OPTIONS.lineInputSource;
-      currentOptions.confirm_input_source = opt.confirm_input_source !== undefined ? Number(opt.confirm_input_source) : DEFAULT_OPTIONS.confirm_input_source;
       currentOptions.clear_input_source = opt.clear_input_source !== undefined ? Number(opt.clear_input_source) : DEFAULT_OPTIONS.clear_input_source;
       currentOptions.cancel_input_source = opt.cancel_input_source !== undefined ? Number(opt.cancel_input_source) : DEFAULT_OPTIONS.cancel_input_source;
       currentOptions.use_3_units = opt.use_3_units !== undefined ? (Number(opt.use_3_units) === 1 ? 1 : 0) : DEFAULT_OPTIONS.use_3_units;
@@ -1267,15 +1202,9 @@ function duplicateInputKeys(sources) {
     }
 
     function populateAllSelects() {
-      var dot = document.getElementById('dot-source');
-      var line = document.getElementById('line-source');
-      var confirm = document.getElementById('confirm-source');
       var clear = document.getElementById('clear-source');
       var cancel = document.getElementById('cancel-source');
 
-      populateSelect(dot, currentOptions.dotInputSource);
-      populateSelect(line, currentOptions.lineInputSource);
-      populateSelect(confirm, currentOptions.confirm_input_source);
       populateSelect(clear, currentOptions.clear_input_source);
       populateSelect(cancel, currentOptions.cancel_input_source);
     }
@@ -1351,9 +1280,6 @@ function duplicateInputKeys(sources) {
     }
 
     function validate() {
-      var dot = document.getElementById('dot-source');
-      var line = document.getElementById('line-source');
-      var confirm = document.getElementById('confirm-source');
       var clear = document.getElementById('clear-source');
       var cancel = document.getElementById('cancel-source');
       var alertBox = document.getElementById('validation_alert');
@@ -1361,20 +1287,17 @@ function duplicateInputKeys(sources) {
       var confirmHelp = document.getElementById('confirm-help');
       var dict = i18nData[currentLang] || i18nData['en'];
 
-      var dotVal = Number(dot.value);
-      var lineVal = Number(line.value);
-      var confirmVal = Number(confirm.value);
       var clearVal = Number(clear.value);
       var cancelVal = Number(cancel.value);
       var unitMs = Number(currentOptions.unitMs);
 
-      confirmHelp.textContent = currentLang === 'ko' ? 'Primary: 선택한 나누는 기준과 영역별 역할을 적용합니다. Secondary 버튼은 선택 사항입니다.' : 'Primary: touch uses the selected split and region roles. Secondary buttons are optional.';
+      confirmHelp.textContent = currentLang === 'ko' ? '점·선과 수동 완성·띄어쓰기는 터치로 입력합니다. 보조 버튼은 취소·지우기에만 사용합니다.' : 'Use touch for dots, dashes, manual completion and spaces. Optional buttons only cancel or clear input.';
 
       // Check duplicates
-      var isDuplicate = duplicateInputKeys([dotVal,lineVal,confirmVal,clearVal,cancelVal]);
+      var isDuplicate = duplicateInputKeys([clearVal,cancelVal]);
 
       // Check valid sources
-      var isValidSources = [dotVal, lineVal, confirmVal, clearVal, cancelVal].every(function(v) {
+      var isValidSources = [clearVal, cancelVal].every(function(v) {
         return SOURCES_DEF.some(function(s) { return s.id === v; });
       });
 
@@ -1382,7 +1305,7 @@ function duplicateInputKeys(sources) {
       var isUnitValid = isFinite(unitMs) && Math.floor(unitMs) === unitMs && unitMs >= 80 && unitMs <= 600;
 
       // Check Version & Payload
-      var isVersionValid = Number(currentOptions.version) === 5;
+      var isVersionValid = Number(currentOptions.version) === 6;
 
       var errorMsg = '';
       if (!isVersionValid) {
@@ -1668,28 +1591,10 @@ function duplicateInputKeys(sources) {
     // ==========================================
     function setupEventListeners() {
       bindTraining();
-      var dot = document.getElementById('dot-source');
-      var line = document.getElementById('line-source');
-      var confirm = document.getElementById('confirm-source');
       var clear = document.getElementById('clear-source');
       var cancel = document.getElementById('cancel-source');
       var range = document.getElementById('unit-ms-range');
       var visual = document.getElementById('visual-feedback');
-
-      dot.addEventListener('change', function(e) {
-        currentOptions.dotInputSource = Number(e.target.value);
-        validate();
-      });
-
-      line.addEventListener('change', function(e) {
-        currentOptions.lineInputSource = Number(e.target.value);
-        validate();
-      });
-
-      confirm.addEventListener('change', function(e) {
-        currentOptions.confirm_input_source = Number(e.target.value);
-        validate();
-      });
 
       clear.addEventListener('change', function(e) {
         currentOptions.clear_input_source = Number(e.target.value);
@@ -1751,9 +1656,6 @@ function duplicateInputKeys(sources) {
             advanced_policy: Number(currentOptions.advanced_policy),
             touch_layout: Number(currentOptions.touch_layout),
 
-            dotInputSource: Number(currentOptions.dotInputSource),
-            lineInputSource: Number(currentOptions.lineInputSource),
-            confirm_input_source: Number(currentOptions.confirm_input_source),
             clear_input_source: Number(currentOptions.clear_input_source),
             cancel_input_source: Number(currentOptions.cancel_input_source),
             use_3_units: Number(currentOptions.use_3_units),
