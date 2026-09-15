@@ -1175,9 +1175,9 @@ function validTraining(options) {
       var n = Number(options[k]); return isFinite(n) && Math.floor(n) === n && n >= 0 && n <= 15;
     });
 }
-function duplicateButtons(sources) {
+function duplicateInputKeys(sources) {
   return sources.some(function(v,i) { return v !== 0 && sources.some(function(w,j) {
-    return j < i && w !== 0 && Math.floor((v-15)/2) === Math.floor((w-15)/2);
+    return j < i && v === w;
   }); });
 }
 
@@ -1331,7 +1331,7 @@ function duplicateButtons(sources) {
       confirmHelp.textContent = currentLang === 'ko' ? 'Primary: 선택한 나누는 기준과 영역별 역할을 적용합니다. Secondary 버튼은 선택 사항입니다.' : 'Primary: touch uses the selected split and region roles. Secondary buttons are optional.';
 
       // Check duplicates
-      var isDuplicate = duplicateButtons([dotVal,lineVal,confirmVal]);
+      var isDuplicate = duplicateInputKeys([dotVal,lineVal,confirmVal]);
 
       // Check valid sources
       var isValidSources = [dotVal, lineVal, confirmVal].every(function(v) {
