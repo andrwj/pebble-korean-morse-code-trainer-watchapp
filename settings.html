@@ -801,6 +801,26 @@
       <div style="margin-top: 10px;">
         <select id="confirm-source" class="select-input"></select>
       </div>
+      <div class="divider"></div>
+      <div class="card-row">
+        <div class="card-info">
+          <div class="card-label" data-i18n="cancelSourceLabel">현재 글자 취소</div>
+          <div class="card-desc" data-i18n="cancelSourceDesc">현재 조합 중인 한 글자와 모르스 입력을 취소합니다. 기본값은 위(UP) 버튼 한 번 클릭입니다.</div>
+        </div>
+      </div>
+      <div style="margin-top: 10px;">
+        <select id="cancel-source" class="select-input"></select>
+      </div>
+      <div class="divider"></div>
+      <div class="card-row">
+        <div class="card-info">
+          <div class="card-label" data-i18n="clearSourceLabel">전체 입력 지우기</div>
+          <div class="card-desc" data-i18n="clearSourceDesc">시계의 입력 문장과 조합을 모두 지웁니다. 기본값은 위(UP) 버튼 길게 누르기입니다.</div>
+        </div>
+      </div>
+      <div style="margin-top: 10px;">
+        <select id="clear-source" class="select-input"></select>
+      </div>
       <div class="callout-box" id="confirm-help-box">
         <span>💡</span>
         <div id="confirm-help" style="flex: 1;"></div>
@@ -983,10 +1003,14 @@
         copiedToast: "복사 완료!",
         cancelBtn: "취소",
         saveBtn: "설정 저장",
-        errDuplicate: "오류: 점(·), 선(—), 글자 완성 동작은 서로 다른 동작을 지정해야 합니다.",
+        cancelSourceLabel: "현재 글자 취소",
+        cancelSourceDesc: "현재 조합 중인 한 글자와 모르스 입력을 취소합니다. 기본값은 위(UP) 버튼 한 번 클릭입니다.",
+        clearSourceLabel: "전체 입력 지우기",
+        clearSourceDesc: "시계의 입력 문장과 조합을 모두 지웁니다. 기본값은 위(UP) 버튼 길게 누르기입니다.",
+        errDuplicate: "오류: 점(·), 선(—), 글자 완성, 현재 글자 취소, 전체 입력 지우기는 서로 다른 동작을 지정해야 합니다.",
         errUnitRange: "오류: 단위 시간(Unit Ms)은 80ms에서 600ms 사이의 정수여야 합니다.",
         errPayloadVersion: "주의: 시계의 최신 설정을 불러온 뒤 다시 열어 주세요.",
-        errIncomplete: "오류: 세 가지 입력 동작을 모두 선택해 주세요.",
+        errIncomplete: "오류: 네 가지 입력 동작을 모두 선택해 주세요.",
         confirmRightHelp: "오른쪽으로 밀어 글자 완성 · 완성 후 새 입력이 없으면 띄어쓰기",
         confirmGeneralHelp: "선택한 동작으로 글자 완성 · 완성 후 새 입력이 없으면 띄어쓰기",
         groupTouch: "터치 제스처 (Touch Gestures)",
@@ -1032,10 +1056,14 @@
         copiedToast: "Copied!",
         cancelBtn: "Cancel",
         saveBtn: "Save Settings",
-        errDuplicate: "Error: Dot, Dash, and Commit inputs must be assigned to different actions.",
+        cancelSourceLabel: "Cancel Current Character",
+        cancelSourceDesc: "Cancel the current character and Morse input. Default: UP Single Click.",
+        clearSourceLabel: "Clear All Input",
+        clearSourceDesc: "Clear all text and composition on the watch. Default: UP Long Click.",
+        errDuplicate: "Error: Dot, Dash, Commit, Cancel, and Clear inputs must be assigned to different actions.",
         errUnitRange: "Error: Unit duration must be an integer between 80ms and 600ms.",
         errPayloadVersion: "Notice: Please reload the latest settings from the watch and reopen.",
-        errIncomplete: "Error: Please select valid actions for all three inputs.",
+        errIncomplete: "Error: Please select valid actions for all four inputs.",
         confirmRightHelp: "Swipe right to commit · Space if no new input",
         confirmGeneralHelp: "Selected action to commit · Space if no new input",
         groupTouch: "Touch Gestures",
@@ -1058,10 +1086,12 @@
     var LEVEL_UNITS = [400, 320, 250, 200, 160, 120];
 
     var DEFAULT_OPTIONS = {
-      version: 3,
+      version: 5,
       dotInputSource: 0,
       lineInputSource: 0,
       confirm_input_source: 0,
+      clear_input_source: 16,
+      cancel_input_source: 15,
       use_3_units: 0,
       use_7_units: 0,
       training_mode: 0, tolerance_percent: 10,
@@ -1127,6 +1157,8 @@
       currentOptions.dotInputSource = opt.dotInputSource !== undefined ? Number(opt.dotInputSource) : DEFAULT_OPTIONS.dotInputSource;
       currentOptions.lineInputSource = opt.lineInputSource !== undefined ? Number(opt.lineInputSource) : DEFAULT_OPTIONS.lineInputSource;
       currentOptions.confirm_input_source = opt.confirm_input_source !== undefined ? Number(opt.confirm_input_source) : DEFAULT_OPTIONS.confirm_input_source;
+      currentOptions.clear_input_source = opt.clear_input_source !== undefined ? Number(opt.clear_input_source) : DEFAULT_OPTIONS.clear_input_source;
+      currentOptions.cancel_input_source = opt.cancel_input_source !== undefined ? Number(opt.cancel_input_source) : DEFAULT_OPTIONS.cancel_input_source;
       currentOptions.use_3_units = opt.use_3_units !== undefined ? (Number(opt.use_3_units) === 1 ? 1 : 0) : DEFAULT_OPTIONS.use_3_units;
       currentOptions.use_7_units = opt.use_7_units !== undefined ? (Number(opt.use_7_units) === 1 ? 1 : 0) : DEFAULT_OPTIONS.use_7_units;
       currentOptions.speedLevel = opt.speedLevel !== undefined ? Number(opt.speedLevel) : DEFAULT_OPTIONS.speedLevel;
@@ -1238,10 +1270,14 @@ function duplicateInputKeys(sources) {
       var dot = document.getElementById('dot-source');
       var line = document.getElementById('line-source');
       var confirm = document.getElementById('confirm-source');
+      var clear = document.getElementById('clear-source');
+      var cancel = document.getElementById('cancel-source');
 
       populateSelect(dot, currentOptions.dotInputSource);
       populateSelect(line, currentOptions.lineInputSource);
       populateSelect(confirm, currentOptions.confirm_input_source);
+      populateSelect(clear, currentOptions.clear_input_source);
+      populateSelect(cancel, currentOptions.cancel_input_source);
     }
 
     // ==========================================
@@ -1318,6 +1354,8 @@ function duplicateInputKeys(sources) {
       var dot = document.getElementById('dot-source');
       var line = document.getElementById('line-source');
       var confirm = document.getElementById('confirm-source');
+      var clear = document.getElementById('clear-source');
+      var cancel = document.getElementById('cancel-source');
       var alertBox = document.getElementById('validation_alert');
       var saveBtn = document.getElementById('btn-save');
       var confirmHelp = document.getElementById('confirm-help');
@@ -1326,15 +1364,17 @@ function duplicateInputKeys(sources) {
       var dotVal = Number(dot.value);
       var lineVal = Number(line.value);
       var confirmVal = Number(confirm.value);
+      var clearVal = Number(clear.value);
+      var cancelVal = Number(cancel.value);
       var unitMs = Number(currentOptions.unitMs);
 
       confirmHelp.textContent = currentLang === 'ko' ? 'Primary: 선택한 나누는 기준과 영역별 역할을 적용합니다. Secondary 버튼은 선택 사항입니다.' : 'Primary: touch uses the selected split and region roles. Secondary buttons are optional.';
 
       // Check duplicates
-      var isDuplicate = duplicateInputKeys([dotVal,lineVal,confirmVal]);
+      var isDuplicate = duplicateInputKeys([dotVal,lineVal,confirmVal,clearVal,cancelVal]);
 
       // Check valid sources
-      var isValidSources = [dotVal, lineVal, confirmVal].every(function(v) {
+      var isValidSources = [dotVal, lineVal, confirmVal, clearVal, cancelVal].every(function(v) {
         return SOURCES_DEF.some(function(s) { return s.id === v; });
       });
 
@@ -1342,7 +1382,7 @@ function duplicateInputKeys(sources) {
       var isUnitValid = isFinite(unitMs) && Math.floor(unitMs) === unitMs && unitMs >= 80 && unitMs <= 600;
 
       // Check Version & Payload
-      var isVersionValid = Number(currentOptions.version) === 3;
+      var isVersionValid = Number(currentOptions.version) === 5;
 
       var errorMsg = '';
       if (!isVersionValid) {
@@ -1631,6 +1671,8 @@ function duplicateInputKeys(sources) {
       var dot = document.getElementById('dot-source');
       var line = document.getElementById('line-source');
       var confirm = document.getElementById('confirm-source');
+      var clear = document.getElementById('clear-source');
+      var cancel = document.getElementById('cancel-source');
       var range = document.getElementById('unit-ms-range');
       var visual = document.getElementById('visual-feedback');
 
@@ -1646,6 +1688,15 @@ function duplicateInputKeys(sources) {
 
       confirm.addEventListener('change', function(e) {
         currentOptions.confirm_input_source = Number(e.target.value);
+        validate();
+      });
+
+      clear.addEventListener('change', function(e) {
+        currentOptions.clear_input_source = Number(e.target.value);
+        validate();
+      });
+      cancel.addEventListener('change', function(e) {
+        currentOptions.cancel_input_source = Number(e.target.value);
         validate();
       });
 
@@ -1703,6 +1754,8 @@ function duplicateInputKeys(sources) {
             dotInputSource: Number(currentOptions.dotInputSource),
             lineInputSource: Number(currentOptions.lineInputSource),
             confirm_input_source: Number(currentOptions.confirm_input_source),
+            clear_input_source: Number(currentOptions.clear_input_source),
+            cancel_input_source: Number(currentOptions.cancel_input_source),
             use_3_units: Number(currentOptions.use_3_units),
             use_7_units: Number(currentOptions.use_7_units),
             speedLevel: Number(currentOptions.speedLevel),
